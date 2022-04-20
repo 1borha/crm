@@ -1,26 +1,33 @@
 <template>
     <ModalWindow>
         <div class="login">
-            <form>
+            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules" >
                 <fieldset class="login__fieldset">
                     <legend class="login__header"><p>Логин</p></legend>
+                    <div class="login__content">
+                        <Field class="login__input"
+                            type="email"
+                            name="email"
+                            id="email"
+                            placeholder="Введите ваш email"
+                        v-model="email" />
 
-                    <input class="login__input"
-                        type="email"
-                        id="email"
-                        placeholder="Введите ваш email"
-                        :value="email"
-                        @input="event => email = event.target.value">
-                    <input class="login__input"
-                        type="password"
-                        id="password"
-                        placeholder="Введите ваш пароль"
-                        :value="password"
-                        @input="event => password = event.target.value">
+                        <Field class="login__input"
+                            type="password"
+                            name="password"
+                            id="password"
+                            placeholder="Введите ваш пароль"
+                            v-model="password" />
 
-                    <BaseButton class="login__button" @click.prevent="submitHandler">Войти</BaseButton>
+                        <div class="errors">
+                            <ErrorMessage class="error" name="email" />
+                            <ErrorMessage class="error" name="password" />
+                            <div class="error" v-if="submitError != ''">{{submitError}}</div>
+                        </div>
+                     </div>
+                    <BaseButton class="login__button">Войти</BaseButton>
                 </fieldset>
-            </form>
+            </Form>
         </div>
     </ModalWindow>
 </template>
@@ -29,44 +36,68 @@
 import ModalWindow from '../components/ModalWindow.vue'
 import BaseButton from '../components/BaseButton.vue'
 import { defineComponent } from 'vue'
+import { Field, Form, ErrorMessage } from 'vee-validate'
+import * as yup from 'yup'
 import { useStore } from '../store'
+import { FirebaseError } from '@firebase/util'
 const store = useStore()
 
 export default defineComponent({
     name: 'BaseLogin',
     data () {
+        const validationRules = yup.object({
+            email: yup.string().required('Поле email обязательное!').email('Недействительный email.').max(255, 'Email не должен превышать 256 символов.'),
+            password: yup.string().required('Поле пароль обязательное!').min(6, 'Пароль дожен быть больше 6 символов.')
+        })
         return {
             email: '',
-            password: ''
+            password: '',
+            validationRules,
+            submitError: ''
         }
     },
     components: {
+        Field,
+        Form,
+        ErrorMessage,
         ModalWindow,
         BaseButton
     },
     methods: {
         async submitHandler () {
             try {
+                this.submitError = ''
                 const email = this.email
                 const password = this.password
                 store.commit('setEmail', email)
                 store.commit('setPassword', password)
                 await store.dispatch('USER_LOGIN', store.state.auth)
                 this.$router.push('/')
-            } catch (e) {
+            } catch (e: unknown) {
+                if (e instanceof FirebaseError) {
+                    console.log(e.code)
+                    if (e.code === 'auth/user-not-found' ||
+                        e.code === 'auth/wrong-password' ||
+                        e.code === 'auth/invalid-argument') {
+                            this.submitError = 'Неверный логин или пароль.'
+                    } else if (e.code === 'auth/too-many-requests') {
+                        this.submitError = 'Слишком много попыток. Попробуйте позже.'
+                    } else {
+                        this.submitError = 'Неизвестная ошибка. Обратитесь в поддержку.'
+                    }
+                }
             }
         }
-    },
-    computed: {
     }
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .login {
     margin: 30px auto;
+    padding: 25px 0;
     width: 50%;
-    height: 50%;
+    max-height: 50%;
     background-color: #F8F8F8;
     border-radius: 10px;
 }
@@ -83,8 +114,12 @@ export default defineComponent({
     font-size: 48px;
 }
 
+.login__content {
+    width: 50%;
+}
+
 .login__input {
-    width: 45%;
+    width: 100%;
     margin-bottom: 20px;
     padding: 15px;
     font-size: 16px;
@@ -98,5 +133,17 @@ export default defineComponent({
 
 .login__button {
     margin-top: 10px;
+}
+
+.errors {
+    margin-left: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    line-height: 1.3;
+}
+
+.error {
+    color: #FF2400;
 }
 </style>
