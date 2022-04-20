@@ -1,0 +1,47 @@
+.profile__item {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 40px;
+    margin-left: 20px;
+    margin-bottom: 34px;
+}
+
+.profile__item p {
+    height: 22px;
+}
+
+.profile__image {
+    border-radius: 50%;
+    object-fit:cover;
+}
+
+.profile__welcome {
+    font-size: 12px;
+    color: #5A6474;
+    font-weight: 300;
+}
+
+.profile__user {
+    font-size: 18px;
+    color: #404D61;
+    font-weight: 500;
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.profile__button {
+    width: 50px;
+    height: 40px;
+    background: #FFFFFF;
+    background-image: url("../assets/images/particles/settings_particle.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 24px;
+    border: 0.5px solid #E0E0E0;
+    box-sizing: border-box;
+    border-radius: 5px;
+    &:hover {
+        background-color: #E0E0E0;
+    }
+}
