@@ -1,7 +1,7 @@
 <template>
     <ModalWindow>
         <div class="register">
-            <Form @submit="submitHandler" :validation-schema="validationRules">
+            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
                 <fieldset class="register__fieldset">
                     <legend class="register__header"><p>Регистрация</p></legend>
                     <div class="register__content">
@@ -46,6 +46,7 @@
                             <ErrorMessage class="error" name="lastName" />
                             <ErrorMessage class="error" name="password" />
                             <ErrorMessage class="error" name="confirmPassword" />
+                            <div class="error" v-if="submitError != ''">{{submitError}}</div>
                         </div>
                     </div>
                     <BaseButton class="register__button">Зарегистрироваться</BaseButton>
@@ -61,26 +62,44 @@ import BaseButton from '../components/BaseButton.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 import { defineComponent } from 'vue'
-// import { useStore } from '../store'
-// const store = useStore()
+import { useStore } from '../store'
+import { FirebaseError } from '@firebase/util'
+const store = useStore()
 
 export default defineComponent({
     name: 'BaseRegister',
     data () {
         const validationRules = yup.object({
-            email: yup.string().required('Поле email обязательное!').email('Недействительный email').max(255, 'Email не должен превышать 256 символов.'),
-            firstName: yup.string().required('Поле имя обязательное!').matches(/^([А-Я]{1}[а-яё]{1,23})$/gm, 'Некорректное имя.'),
-            lastName: yup.string().required('Поле фамилия обязательное!').matches(/^([А-Я]{1}[а-яё]{1,23})$/gm, 'Некорректная фамилия.'),
-            password: yup.string().required('Поле пароль обязательное!').min(6, 'Пароль дожен быть больше 6 символов'),
-            confirmPassword: yup.string().required('Поле подтвердите пароль обязательное!').min(6, 'Пароль дожен быть больше 6 символов.').oneOf([yup.ref('password')], 'Пароли должны совпадать.')
+            email: yup.string()
+                .required('Поле email обязательное!')
+                .email('Недействительный email')
+                .max(255, 'Email не должен превышать 256 символов.'),
+
+            firstName: yup.string()
+                .required('Поле имя обязательное!')
+                .matches(/^([А-Я]{1}[а-яё]{1,23})$/gm, 'Некорректное имя.'),
+
+            lastName: yup.string()
+                .required('Поле фамилия обязательное!')
+                .matches(/^([А-Я]{1}[а-яё]{1,23})$/gm, 'Некорректная фамилия.'),
+
+            password: yup.string()
+                .required('Поле пароль обязательное!')
+                .min(6, 'Пароль дожен быть больше 6 символов'),
+
+            confirmPassword: yup.string()
+                .required('Поле подтвердите пароль обязательное!')
+                .min(6, 'Пароль дожен быть больше 6 символов.')
+                .oneOf([yup.ref('password')], 'Пароли должны совпадать.')
         })
 
         return {
+            email: '',
             firstName: '',
             lastName: '',
-            email: '',
             password: '',
             confirmPassword: '',
+            submitError: '',
             validationRules
         }
     },
@@ -93,16 +112,33 @@ export default defineComponent({
     },
     methods: {
         async submitHandler () {
-            console.log(this.email, this.firstName, this.lastName, this.password, this.confirmPassword)
-            // try {
-            //     const email = this.email
-            //     const password = this.password
-            //     store.commit('setEmail', email)
-            //     store.commit('setPassword', password)
-            //     await store.dispatch('USER_LOGIN', store.state.auth)
-            //     this.$router.push('/')
-            // } catch (e) {
-            // }
+            try {
+                this.submitError = ''
+                const email = this.email
+                const firstName = this.firstName
+                const lastName = this.lastName
+                const password = this.password
+
+                store.commit('setEmail', email)
+                store.commit('setFirstName', firstName)
+                store.commit('setLastName', lastName)
+                store.commit('setPassword', password)
+
+                await store.dispatch('USER_REGISTER', store.state.auth)
+                this.$router.push('/')
+            } catch (e: unknown) {
+                if (e instanceof FirebaseError) {
+                    const err = e.code
+                    switch (err) {
+                        case 'auth/email-already-in-use' : this.submitError = 'Email занят'; break
+                        case 'auth/invalid-argument' : this.submitError = 'Недопустимый аргумент'; break
+                        case 'auth/invalid-email' : this.submitError = 'Недопустимый email'; break
+                        case 'auth/invalid-password' : this.submitError = 'Недопустимый пароль'; break
+                        case 'auth/too-many-requests' : this.submitError = 'Слишком много попыток. Попробуйте позже.'; break
+                        default: this.submitError = 'Неизвестная ошибка. Обратитесь в поддержку.'
+                    }
+                }
+            }
         }
     }
 })

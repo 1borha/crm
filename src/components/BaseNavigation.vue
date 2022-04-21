@@ -75,15 +75,13 @@
                         height="16"
                         :inline="true" />
                     Поддержка</li>
-                <router-link :to="{name: 'login'}">
-                    <li class="nav__item">
+                    <li class="nav__item" @click="signOut()">
                         <Icon icon="ion:power"
                             color="#757d8a"
                             width="16"
                             height="16"
                             :inline="true" />
                         Выход</li>
-                </router-link>
             </ul>
         </footer>
     </nav>
@@ -91,11 +89,24 @@
 
 <script>
 import { Icon } from '@iconify/vue'
+import { useStore } from '../store'
+const store = useStore()
 export default {
     components: {
 		Icon
 	},
-    name: 'BaseNavigation'
+    name: 'BaseNavigation',
+    data () {
+        return {
+            name: 'Default'
+        }
+    },
+    methods: {
+        async signOut () {
+            await store.dispatch('USER_SIGNOUT', 'Bye')
+            this.$router.push('/login')
+        }
+    }
 }
 </script>
 

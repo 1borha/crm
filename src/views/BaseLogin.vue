@@ -1,7 +1,7 @@
 <template>
     <ModalWindow>
         <div class="login">
-            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules" >
+            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
                 <fieldset class="login__fieldset">
                     <legend class="login__header"><p>Логин</p></legend>
                     <div class="login__content">
@@ -10,7 +10,7 @@
                             name="email"
                             id="email"
                             placeholder="Введите ваш email"
-                        v-model="email" />
+                            v-model="email" />
 
                         <Field class="login__input"
                             type="password"
@@ -46,8 +46,14 @@ export default defineComponent({
     name: 'BaseLogin',
     data () {
         const validationRules = yup.object({
-            email: yup.string().required('Поле email обязательное!').email('Недействительный email.').max(255, 'Email не должен превышать 256 символов.'),
-            password: yup.string().required('Поле пароль обязательное!').min(6, 'Пароль дожен быть больше 6 символов.')
+            email: yup.string()
+                .required('Поле email обязательное!')
+                .email('Недействительный email.')
+                .max(255, 'Email не должен превышать 256 символов.'),
+
+            password: yup.string()
+                .required('Поле пароль обязательное!')
+                .min(6, 'Пароль дожен быть больше 6 символов.')
         })
         return {
             email: '',
@@ -71,15 +77,14 @@ export default defineComponent({
                 const password = this.password
                 store.commit('setEmail', email)
                 store.commit('setPassword', password)
-                await store.dispatch('USER_LOGIN', store.state.auth)
+                await store.dispatch('USER_SIGNIN', store.state.auth)
                 this.$router.push('/')
             } catch (e: unknown) {
                 if (e instanceof FirebaseError) {
-                    console.log(e.code)
                     if (e.code === 'auth/user-not-found' ||
                         e.code === 'auth/wrong-password' ||
                         e.code === 'auth/invalid-argument') {
-                            this.submitError = 'Неверный логин или пароль.'
+                            this.submitError = 'Неверный email или пароль.'
                     } else if (e.code === 'auth/too-many-requests') {
                         this.submitError = 'Слишком много попыток. Попробуйте позже.'
                     } else {
@@ -97,7 +102,7 @@ export default defineComponent({
     margin: 30px auto;
     padding: 25px 0;
     width: 50%;
-    max-height: 50%;
+    min-height: 40%;
     background-color: #F8F8F8;
     border-radius: 10px;
 }

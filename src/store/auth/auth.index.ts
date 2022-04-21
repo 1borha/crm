@@ -11,6 +11,13 @@ type State = typeof initState
 export type MutationPayload = {
 	setEmail: string;
 	getEmail: string;
+
+	setFirstName: string;
+	getFirstName: string;
+
+	setLastName: string;
+	getLastName: string;
+
 	setPassword: string;
 	getPassword: string;
 }
@@ -29,6 +36,21 @@ export const mutations: MutationTree<State> & Mutations = {
 	getEmail ({ auth }) {
 		return auth.email
 	},
+
+	setFirstName ({ auth }, value: string) {
+		auth.firstName = value
+	},
+	getFirstName ({ auth }) {
+		return auth.firstName
+	},
+
+	setLastName ({ auth }, value: string) {
+		auth.lastName = value
+	},
+	getLastName ({ auth }) {
+		return auth.lastName
+	},
+
 	setPassword ({ auth }, value: string) {
 		auth.password = value
 	},
@@ -61,7 +83,10 @@ export const getters: GetterTree<State, State> & Getters = {
 */
 
 export type ActionsPayload = {
-	USER_LOGIN: [payload: object, returnVal: void];
+	USER_SIGNIN: [payload: object, returnVal: void];
+	USER_SIGNOUT: [payload: string, returnVal: void];
+	USER_REGISTER: [payload: object, returnVal: void];
+	GET_UID: [payload: object, returnVal: void];
 }
 
 type AugmentedActionContext = {
@@ -80,7 +105,7 @@ type Actions = {
 }
 
 export const actions: Actions = {
-	async USER_LOGIN ({ state }) {
+	async USER_SIGNIN ({ state }) {
 		try {
 			const email = state.auth.email
 			const password = state.auth.password
@@ -89,6 +114,32 @@ export const actions: Actions = {
 			console.log(error)
 			throw error
 		}
+	},
+	async USER_SIGNOUT (a) {
+		await firebase.auth().signOut()
+		console.log(a)
+	},
+	async USER_REGISTER ({ state, dispatch }) {
+		try {
+			const email = state.auth.email
+			const firstName = state.auth.firstName
+			const lastName = state.auth.lastName
+			const password = state.auth.password
+			await firebase.auth().createUserWithEmailAndPassword(email, password)
+			const uid = await dispatch('GET_UID')
+			await firebase.database().ref(`users/${uid}/info`).set({
+				firstName: firstName,
+				lastName: lastName
+			})
+		} catch (error) {
+			console.log(error)
+			throw error
+		}
+	},
+	GET_UID () {
+		const user = firebase.auth().currentUser
+		console.log(user?.uid)
+		return user ? user.uid : null
 	}
 }
 
