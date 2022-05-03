@@ -10,7 +10,7 @@
                             name="email"
                             id="email"
                             placeholder="Введите ваш email"
-                            v-model="email" />
+                            v-model="userData.email" />
 
                         <Field class="login__input"
                             type="password"
@@ -56,7 +56,11 @@ export default defineComponent({
                 .min(6, 'Пароль дожен быть больше 6 символов.')
         })
         return {
-            email: '',
+            userData: {
+                email: '',
+                firstName: '',
+                lastName: ''
+            },
             password: '',
             validationRules,
             submitError: ''
@@ -73,22 +77,19 @@ export default defineComponent({
         async submitHandler () {
             try {
                 this.submitError = ''
-                const email = this.email
-                const password = this.password
-                store.commit('setEmail', email)
-                store.commit('setPassword', password)
-                await store.dispatch('USER_SIGNIN', store.state.auth)
+                const userData = this.userData
+
+                store.commit('setUser', userData)
+                await store.dispatch('USER_SIGNIN', this.password)
                 this.$router.push('/')
             } catch (e: unknown) {
                 if (e instanceof FirebaseError) {
-                    if (e.code === 'auth/user-not-found' ||
-                        e.code === 'auth/wrong-password' ||
-                        e.code === 'auth/invalid-argument') {
-                            this.submitError = 'Неверный email или пароль.'
-                    } else if (e.code === 'auth/too-many-requests') {
-                        this.submitError = 'Слишком много попыток. Попробуйте позже.'
-                    } else {
-                        this.submitError = 'Неизвестная ошибка. Обратитесь в поддержку.'
+                    const err = e.code
+
+                    switch (err) {
+                        case 'auth/user-not-found' || 'auth/wrong-password' || 'auth/invalid-argument' : this.submitError = 'Неверный email или пароль.'; break
+                        case 'auth/too-many-requests' : this.submitError = 'Слишком много попыток. Попробуйте позже.'; break
+                        default: this.submitError = 'Неизвестная ошибка. Обратитесь в поддержку.'; break
                     }
                 }
             }

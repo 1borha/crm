@@ -10,21 +10,21 @@
                             name="email"
                             id="email"
                             placeholder="Введите ваш email"
-                            v-model="email" />
+                            v-model="userData.email" />
 
                         <Field class="register__input"
                             type="text"
                             name="firstName"
                             id="firstName"
                             placeholder="Введите ваше имя"
-                            v-model="firstName" />
+                            v-model="userData.firstName" />
 
                         <Field class="register__input"
                             type="text"
                             name="lastName"
                             id="lastName"
                             placeholder="Введите вашу фамилию"
-                            v-model="lastName" />
+                            v-model="userData.lastName" />
 
                         <Field class="register__input"
                             type="password"
@@ -94,9 +94,11 @@ export default defineComponent({
         })
 
         return {
-            email: '',
-            firstName: '',
-            lastName: '',
+            userData: {
+                email: '',
+                firstName: '',
+                lastName: ''
+            },
             password: '',
             confirmPassword: '',
             submitError: '',
@@ -114,17 +116,10 @@ export default defineComponent({
         async submitHandler () {
             try {
                 this.submitError = ''
-                const email = this.email
-                const firstName = this.firstName
-                const lastName = this.lastName
-                const password = this.password
+                const userData = this.userData
 
-                store.commit('setEmail', email)
-                store.commit('setFirstName', firstName)
-                store.commit('setLastName', lastName)
-                store.commit('setPassword', password)
-
-                await store.dispatch('USER_REGISTER', store.state.auth)
+                store.commit('setUser', userData)
+                await store.dispatch('USER_REGISTER', this.password)
                 this.$router.push('/')
             } catch (e: unknown) {
                 if (e instanceof FirebaseError) {
@@ -135,7 +130,7 @@ export default defineComponent({
                         case 'auth/invalid-email' : this.submitError = 'Недопустимый email'; break
                         case 'auth/invalid-password' : this.submitError = 'Недопустимый пароль'; break
                         case 'auth/too-many-requests' : this.submitError = 'Слишком много попыток. Попробуйте позже.'; break
-                        default: this.submitError = 'Неизвестная ошибка. Обратитесь в поддержку.'
+                        default: this.submitError = 'Неизвестная ошибка. Обратитесь в поддержку.'; break
                     }
                 }
             }

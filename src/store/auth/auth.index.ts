@@ -4,22 +4,27 @@ import { initState } from '../initState'
 
 type State = typeof initState
 
+interface UserPayload {
+	uid?: string,
+	email: string,
+	firstName: string,
+	lastName: string,
+}
+
+interface MyAuthCredential {
+	password: string,
+	newPassword: string
+}
 /*
    ---------------------- Mutations -------------------------------
 */
 
 export type MutationPayload = {
-	setEmail: string;
-	getEmail: string;
+	setUser: UserPayload;
+	getUser: UserPayload;
 
-	setFirstName: string;
-	getFirstName: string;
-
-	setLastName: string;
-	getLastName: string;
-
-	setPassword: string;
-	getPassword: string;
+	setIsAuth: boolean;
+	getIsAuth: boolean;
 }
 
 type Mutations = {
@@ -30,32 +35,18 @@ type Mutations = {
 };
 
 export const mutations: MutationTree<State> & Mutations = {
-	setEmail ({ auth }, value: string) {
-		auth.email = value
+	setUser ({ auth }, payload: UserPayload) {
+		auth.user = payload
 	},
-	getEmail ({ auth }) {
-		return auth.email
-	},
-
-	setFirstName ({ auth }, value: string) {
-		auth.firstName = value
-	},
-	getFirstName ({ auth }) {
-		return auth.firstName
+	getUser ({ auth }) {
+		return auth.user
 	},
 
-	setLastName ({ auth }, value: string) {
-		auth.lastName = value
+	setIsAuth ({ auth }, value: boolean) {
+		auth.isAuth = value
 	},
-	getLastName ({ auth }) {
-		return auth.lastName
-	},
-
-	setPassword ({ auth }, value: string) {
-		auth.password = value
-	},
-	getPassword ({ auth }) {
-		return auth.password
+	getIsAuth ({ auth }) {
+		return auth.isAuth
 	}
 }
 
@@ -67,14 +58,17 @@ export type Getters = {
 	authGet(
 		state: State
 	): {
-		email: string,
-        password: string
-	}
+		user: UserPayload
+	},
+	firstName(state: State): string
 }
 
 export const getters: GetterTree<State, State> & Getters = {
 	authGet: ({ auth }) => {
 		return auth
+	},
+	firstName: ({ auth }) => {
+		return auth.user.firstName
 	}
 }
 
@@ -83,10 +77,16 @@ export const getters: GetterTree<State, State> & Getters = {
 */
 
 export type ActionsPayload = {
-	USER_SIGNIN: [payload: object, returnVal: void];
+	USER_SIGNIN: [payload: string, returnVal: void];
 	USER_SIGNOUT: [payload: string, returnVal: void];
-	USER_REGISTER: [payload: object, returnVal: void];
+	USER_REGISTER: [payload: string, returnVal: void];
+	AUTO_USER_SIGNIN: [payload: UserPayload, returnVal: void];
 	GET_UID: [payload: object, returnVal: void];
+	GET_USER: [payload: void, returnVal: void]
+	CLEAR_USERDATA: [payload: object, returnVal: void];
+	CHANGE_FIRSTNAME: [payload: string, returnVal: void];
+	CHANGE_LASTNAME: [payload: string, returnVal: void];
+	CHANGE_PASSWORD: [payload: MyAuthCredential, returnVal: void];
 }
 
 type AugmentedActionContext = {
@@ -105,41 +105,85 @@ type Actions = {
 }
 
 export const actions: Actions = {
-	async USER_SIGNIN ({ state }) {
+	async USER_SIGNIN ({ state, commit }, payload: string) {
 		try {
-			const email = state.auth.email
-			const password = state.auth.password
+			const email = state.auth.user.email
+			const password = payload
 			await firebase.auth().signInWithEmailAndPassword(email, password)
+			commit('setIsAuth', true)
 		} catch (error) {
 			console.log(error)
 			throw error
 		}
 	},
-	async USER_SIGNOUT (a) {
+	async USER_SIGNOUT ({ dispatch }) {
 		await firebase.auth().signOut()
-		console.log(a)
+		dispatch('CLEAR_USERDATA')
 	},
-	async USER_REGISTER ({ state, dispatch }) {
+	async USER_REGISTER ({ state, dispatch, commit }, payload: string) {
 		try {
-			const email = state.auth.email
-			const firstName = state.auth.firstName
-			const lastName = state.auth.lastName
-			const password = state.auth.password
+			const email = state.auth.user.email
+			const firstName = state.auth.user.firstName
+			const lastName = state.auth.user.lastName
+			const password = payload
 			await firebase.auth().createUserWithEmailAndPassword(email, password)
 			const uid = await dispatch('GET_UID')
 			await firebase.database().ref(`users/${uid}/info`).set({
 				firstName: firstName,
 				lastName: lastName
 			})
+			commit('setIsAuth', true)
 		} catch (error) {
 			console.log(error)
 			throw error
 		}
 	},
-	GET_UID () {
+	async AUTO_USER_SIGNIN ({ commit }, payload: UserPayload) {
+		const firstName = await (await firebase.database().ref(`users/${payload.uid}/info/firstName`).get()).val()
+		const lastName = await (await firebase.database().ref(`users/${payload.uid}/info/lastName`).get()).val()
+		commit('setUser', {
+			email: payload.email,
+			firstName: firstName,
+			lastName: lastName
+		})
+	},
+	GET_USER () {
 		const user = firebase.auth().currentUser
-		console.log(user?.uid)
-		return user ? user.uid : null
+		return (user !== null) ? user : null
+	},
+	async GET_UID ({ dispatch }) {
+		const user = await dispatch('GET_USER')
+		return user.uid
+	},
+	CLEAR_USERDATA ({ commit }) {
+		commit('setUser', { email: '', firstName: '', lastName: '' })
+		commit('setIsAuth', false)
+	},
+	async CHANGE_FIRSTNAME ({ dispatch }, payload) {
+		const uid = await dispatch('GET_UID')
+		await firebase.database().ref(`users/${uid}/info`).update({
+			firstName: payload
+		})
+	},
+	async CHANGE_LASTNAME ({ dispatch }, payload) {
+		const uid = await dispatch('GET_UID')
+		await firebase.database().ref(`users/${uid}/info`).update({
+			lastName: payload
+		})
+	},
+	async CHANGE_PASSWORD ({ dispatch, state }, payload) {
+		const user = await dispatch('GET_USER')
+		const credential = firebase.auth.EmailAuthProvider.credential(
+			state.auth.user.email,
+			payload.password
+		)
+		try {
+			await user.reauthenticateWithCredential(credential)
+			await user.updatePassword(payload.newPassword)
+		} catch (e) {
+			console.log(e)
+			throw e
+		}
 	}
 }
 

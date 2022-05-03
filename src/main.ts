@@ -20,7 +20,9 @@ firebase.initializeApp({
 
 let app : unknown
 
-firebase.auth().onAuthStateChanged(() => {
+firebase.auth().onAuthStateChanged((user) => {
+    store.dispatch('AUTO_USER_SIGNIN', user)
+    store.commit('setIsAuth', true)
     if (!app) {
         createApp(App)
         .use(store)

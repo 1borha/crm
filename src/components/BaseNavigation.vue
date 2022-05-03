@@ -5,11 +5,13 @@
                 <img class="profile__image" src="../assets/images/default_profile_image.svg" width="40px" height="40px">
             </div>
             <div class="profile__item">
-                <p class="profile__welcome">Welcome back,</p>
-                <p class="profile__user">User</p>
+                <p class="profile__welcome">Здравствуйте,</p>
+                <p class="profile__user" >{{$store.getters.firstName}}</p>
             </div>
             <div class="profile__item">
-                <button class="profile__button"></button>
+                <router-link :to="{name: 'profile'}">
+                    <button class="profile__button"></button>
+                </router-link>
             </div>
         </header>
         <main>
@@ -96,11 +98,6 @@ export default {
 		Icon
 	},
     name: 'BaseNavigation',
-    data () {
-        return {
-            name: 'Default'
-        }
-    },
     methods: {
         async signOut () {
             await store.dispatch('USER_SIGNOUT', 'Bye')
