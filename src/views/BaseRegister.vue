@@ -49,7 +49,7 @@
                             <div class="error" v-if="submitError != ''">{{submitError}}</div>
                         </div>
                     </div>
-                    <BaseButton class="register__button">Зарегистрироваться</BaseButton>
+                    <BaseButton type="submit" class="register__button">Зарегистрироваться</BaseButton>
                 </fieldset>
             </Form>
         </div>
