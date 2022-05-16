@@ -7,6 +7,8 @@ import {
 } from 'vuex'
 import { initState } from './initState'
 import * as moduleAuth from './auth/auth.index'
+import * as moduleLayouts from './layouts/layouts.index'
+import * as moduleDeals from './deals/deals.index'
 
 export type State = typeof initState;
 
@@ -17,17 +19,17 @@ if (process.env.NODE_ENV === 'development') {
 
 export const store = createStore({
 	state: initState,
-	mutations: { ...moduleAuth.mutations },
-	getters: { ...moduleAuth.getters },
-	actions: { ...moduleAuth.actions },
+	mutations: { ...moduleAuth.mutations, ...moduleLayouts.mutations, ...moduleDeals.mutations },
+	getters: { ...moduleAuth.getters, ...moduleLayouts.getters, ...moduleDeals.getters },
+	actions: { ...moduleAuth.actions, ...moduleDeals.actions },
 	plugins
 })
 
-type MutationPayload = moduleAuth.MutationPayload
+type MutationPayload = moduleAuth.MutationPayload & moduleLayouts.MutationPayload & moduleDeals.MutationPayload
 
-type ActionsPayload = moduleAuth.ActionsPayload
+type ActionsPayload = moduleAuth.ActionsPayload & moduleDeals.ActionsPayload
 
-type Getters = moduleAuth.Getters
+type Getters = moduleAuth.Getters & moduleLayouts.Getters & moduleDeals.Getters
 
 /*
   ---------------------- no change code ----------------------

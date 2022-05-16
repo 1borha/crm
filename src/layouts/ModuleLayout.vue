@@ -4,13 +4,13 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
     name: 'ModalWindow'
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .modal {
         position: absolute;
         left: 0;

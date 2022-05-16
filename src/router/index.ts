@@ -5,26 +5,50 @@ const routes: Array<RouteRecordRaw> = [
 	{
 		path: '/',
 		name: 'home',
-		meta: { auth: true },
+		meta: { auth: true, layout: 'page-layout' },
 		component: () => import('@/App.vue')
 	},
 	{
 		path: '/login',
 		name: 'login',
-		meta: { auth: false },
+		meta: { auth: false, layout: 'module-layout' },
 		component: () => import('@/views/BaseLogin.vue')
 	},
 	{
 		path: '/register',
 		name: 'register',
-		meta: { auth: false },
+		meta: { auth: false, layout: 'module-layout' },
 		component: () => import('@/views/BaseRegister.vue')
 	},
 	{
 		path: '/profile',
 		name: 'profile',
-		meta: { auth: true },
+		meta: { auth: true, layout: 'page-layout' },
 		component: () => import('@/views/BaseProfile.vue')
+	},
+	{
+		path: '/tasks',
+		name: 'tasks',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/BaseTasks.vue')
+	},
+	{
+		path: '/crm',
+		name: 'crm',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/BaseCRM.vue')
+	},
+	{
+		path: '/deals',
+		name: 'deals',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/BaseDeals.vue')
+	},
+	{
+		path: '/deals/create',
+		name: 'create-deal',
+		meta: { auth: true, layout: 'module-layout' },
+		component: () => import('@/views/CreateDeals.vue')
 	},
 	{
 		path: '/:catchAll(.*)',

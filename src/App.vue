@@ -1,29 +1,25 @@
 <template>
-	<div>
-		<div class="page">
-			<router-view></router-view>
-		</div>
-		<BaseNavigation/>
-	</div>
+	<div id="app">
+		<component :is="layout">
+			<router-view/>
+		</component>
+  </div>
 </template>
 
 <script lang="ts">
-import BaseNavigation from '@/components/BaseNavigation.vue'
-
-export default {
-	components: {
-		BaseNavigation
+import { defineComponent } from 'vue'
+export default defineComponent({
+	computed: {
+		layout () {
+			return this.$route.meta.layout || 'page-layout'
+		}
 	}
-}
+})
 </script>
 
 <style lang="scss">
 @import "assets/styles/reset";
 body {
 	font-family: Roboto, "Helvetica";
-}
-
-.page {
-	margin-left: 250px;
 }
 </style>

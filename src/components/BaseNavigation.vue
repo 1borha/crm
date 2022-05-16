@@ -25,6 +25,7 @@
                             :inline="true" />
                         Лента активности</li>
                 </router-link>
+                <router-link :to="{name: 'tasks'}">
                 <li class="nav__item">
                     <Icon icon="ion:clipboard"
                         color="#757d8a"
@@ -32,6 +33,8 @@
                         height="16"
                         :inline="true" />
                     Задачи</li>
+                </router-link>
+                <router-link :to="{name: 'crm'}">
                 <li class="nav__item">
                     <Icon icon="ion:logo-usd"
                         color="#757d8a"
@@ -39,11 +42,14 @@
                         height="16"
                         :inline="true" />
                     CRM</li>
+                    </router-link>
                 <ul>
-                    <li class="nav__item"><i></i>Сделки</li>
-                    <li class="nav__item"><i></i>Компании</li>
-                    <li class="nav__item"><i></i>Контакты</li>
-                    <li class="nav__item"><i></i>Архивные сделки</li>
+                    <router-link :to="{name: 'deals'}">
+                        <li class="nav__item">Сделки</li>
+                    </router-link>
+                    <li class="nav__item">Компании</li>
+                    <li class="nav__item">Контакты</li>
+                    <li class="nav__item">Архивные сделки</li>
                 </ul>
                 <li class="nav__item">
                     <Icon icon="ion:file-tray-full"
@@ -77,23 +83,24 @@
                         height="16"
                         :inline="true" />
                     Поддержка</li>
-                    <li class="nav__item" @click="signOut()">
-                        <Icon icon="ion:power"
-                            color="#757d8a"
-                            width="16"
-                            height="16"
-                            :inline="true" />
-                        Выход</li>
+                <li class="nav__item" @click="signOut()">
+                    <Icon icon="ion:power"
+                        color="#757d8a"
+                        width="16"
+                        height="16"
+                        :inline="true" />
+                    Выход</li>
             </ul>
         </footer>
     </nav>
 </template>
 
-<script>
+<script lang="ts">
 import { Icon } from '@iconify/vue'
 import { useStore } from '../store'
+import { defineComponent } from 'vue'
 const store = useStore()
-export default {
+export default defineComponent({
     components: {
 		Icon
 	},
@@ -104,7 +111,7 @@ export default {
             this.$router.push('/login')
         }
     }
-}
+})
 </script>
 
 <style lang="scss" scoped>

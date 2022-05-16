@@ -6,5 +6,23 @@ export const initState = {
             lastName: ''
         },
         isAuth: false
+    },
+
+    layout: {
+        layout: 'default-layout'
+    },
+
+    deals: {
+        deals: [
+            {
+                name: '',
+                amount: 0,
+                amountCurrency: 'ru',
+                date: '',
+                creator: '',
+                status: '',
+                result: ''
+            }
+        ]
     }
 }

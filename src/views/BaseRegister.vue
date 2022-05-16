@@ -1,63 +1,60 @@
 <template>
-    <ModalWindow>
-        <div class="register">
-            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
-                <fieldset class="register__fieldset">
-                    <legend class="register__header"><p>Регистрация</p></legend>
-                    <div class="register__content">
-                        <Field class="register__input"
-                            type="email"
-                            name="email"
-                            id="email"
-                            placeholder="Введите ваш email"
-                            v-model="userData.email" />
+    <div class="register">
+        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+            <fieldset class="register__fieldset">
+                <legend class="register__header"><p>Регистрация</p></legend>
+                <div class="register__content">
+                    <Field class="register__input"
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="Введите ваш email"
+                        v-model.trim="userData.email" />
 
-                        <Field class="register__input"
-                            type="text"
-                            name="firstName"
-                            id="firstName"
-                            placeholder="Введите ваше имя"
-                            v-model="userData.firstName" />
+                    <Field class="register__input"
+                        type="text"
+                        name="firstName"
+                        id="firstName"
+                        placeholder="Введите ваше имя"
+                        v-model.trim="userData.firstName" />
 
-                        <Field class="register__input"
-                            type="text"
-                            name="lastName"
-                            id="lastName"
-                            placeholder="Введите вашу фамилию"
-                            v-model="userData.lastName" />
+                    <Field class="register__input"
+                        type="text"
+                        name="lastName"
+                        id="lastName"
+                        placeholder="Введите вашу фамилию"
+                        v-model.trim="userData.lastName" />
 
-                        <Field class="register__input"
-                            type="password"
-                            name="password"
-                            id="password"
-                            placeholder="Введите ваш пароль"
-                            v-model="password" />
+                    <Field class="register__input"
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Введите ваш пароль"
+                        v-model="password" />
 
-                        <Field class="register__input"
-                            type="password"
-                            name="confirmPassword"
-                            id="confirmPassword"
-                            placeholder="Подтвердите ваш пароль"
-                            v-model="confirmPassword" />
+                    <Field class="register__input"
+                        type="password"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        placeholder="Подтвердите ваш пароль"
+                        v-model="confirmPassword" />
 
-                        <div class="errors">
-                            <ErrorMessage class="error" name="email" />
-                            <ErrorMessage class="error" name="firstName" />
-                            <ErrorMessage class="error" name="lastName" />
-                            <ErrorMessage class="error" name="password" />
-                            <ErrorMessage class="error" name="confirmPassword" />
-                            <div class="error" v-if="submitError != ''">{{submitError}}</div>
-                        </div>
+                    <div class="errors">
+                        <ErrorMessage class="error" name="email" />
+                        <ErrorMessage class="error" name="firstName" />
+                        <ErrorMessage class="error" name="lastName" />
+                        <ErrorMessage class="error" name="password" />
+                        <ErrorMessage class="error" name="confirmPassword" />
+                        <div class="error" v-if="submitError != ''">{{submitError}}</div>
                     </div>
-                    <BaseButton type="submit" class="register__button">Зарегистрироваться</BaseButton>
-                </fieldset>
-            </Form>
-        </div>
-    </ModalWindow>
+                </div>
+                <BaseButton type="submit" class="register__button">Зарегистрироваться</BaseButton>
+            </fieldset>
+        </Form>
+    </div>
 </template>
 
 <script lang='ts'>
-import ModalWindow from '../components/ModalWindow.vue'
 import BaseButton from '../components/BaseButton.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
@@ -109,7 +106,6 @@ export default defineComponent({
         Field,
         Form,
         ErrorMessage,
-        ModalWindow,
         BaseButton
     },
     methods: {
@@ -186,7 +182,7 @@ export default defineComponent({
     margin-left: 5px;
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     line-height: 1.3;
 }
 

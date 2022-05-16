@@ -1,15 +1,15 @@
 <template>
+    <header>Профиль</header>
     <div class="profile">
         <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
                 <fieldset class="profile__fieldset">
-                    <legend class="profile__header"><p>Профиль</p></legend>
                     <div class="profile__content">
                         <Field class="profile__input"
                             type="text"
                             name="firstName"
                             id="firstName"
                             placeholder="Новое имя"
-                            v-model="userData.firstName" />
+                            v-model.trim="userData.firstName" />
                         <ErrorMessage class="error" name="firstName" />
 
                         <Field class="profile__input"
@@ -17,7 +17,7 @@
                             name="lastName"
                             id="lastName"
                             placeholder="Новая фамилия"
-                            v-model="userData.lastName" />
+                            v-model.trim="userData.lastName" />
                         <ErrorMessage class="error" name="lastName" />
 
                         <Field class="profile__input"
@@ -154,24 +154,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.profile__header p {
-    margin: 46px 0 46px 30px;
-    font-size: 28px;
-    font-weight: 700;
-    line-height: 22px;
-    color: #404D61;
-}
-
-.profile__header::after {
-    content: "";
-    display: block;
-    position: absolute;
-    height: 1px;
-    width: 100%;
-    background-color: #F1F2F6;
-    margin-bottom: 30px;
-}
-
 .profile__input {
     display: block;
     width: 30%;

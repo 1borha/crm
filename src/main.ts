@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import { store } from './store'
 
+import PageLayout from './layouts/PageLayout.vue'
+import ModuleLayout from './layouts/ModuleLayout.vue'
+
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
 import 'firebase/compat/firestore'
@@ -25,6 +28,8 @@ firebase.auth().onAuthStateChanged((user) => {
     store.commit('setIsAuth', true)
     if (!app) {
         createApp(App)
+        .component('page-layout', PageLayout)
+        .component('module-layout', ModuleLayout)
         .use(store)
         .use(router)
         .mount('#app')

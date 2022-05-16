@@ -1,39 +1,36 @@
 <template>
-    <ModalWindow>
-        <div class="login">
-            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
-                <fieldset class="login__fieldset">
-                    <legend class="login__header"><p>Логин</p></legend>
-                    <div class="login__content">
-                        <Field class="login__input"
-                            type="email"
-                            name="email"
-                            id="email"
-                            placeholder="Введите ваш email"
-                            v-model="userData.email" />
+    <div class="login">
+        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+            <fieldset class="login__fieldset">
+                <legend class="login__header"><p>Логин</p></legend>
+                <div class="login__content">
+                    <Field class="login__input"
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder="Введите ваш email"
+                        v-model.trim="userData.email" />
 
-                        <Field class="login__input"
-                            type="password"
-                            name="password"
-                            id="password"
-                            placeholder="Введите ваш пароль"
-                            v-model="password" />
+                    <Field class="login__input"
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder="Введите ваш пароль"
+                        v-model="password" />
 
-                        <div class="errors">
-                            <ErrorMessage class="error" name="email" />
-                            <ErrorMessage class="error" name="password" />
-                            <div class="error" v-if="submitError != ''">{{submitError}}</div>
-                        </div>
-                     </div>
-                    <BaseButton class="login__button">Войти</BaseButton>
-                </fieldset>
-            </Form>
-        </div>
-    </ModalWindow>
+                    <div class="errors">
+                        <ErrorMessage class="error" name="email" />
+                        <ErrorMessage class="error" name="password" />
+                        <div class="error" v-if="submitError != ''">{{submitError}}</div>
+                    </div>
+                    </div>
+                <BaseButton class="login__button">Войти</BaseButton>
+            </fieldset>
+        </Form>
+    </div>
 </template>
 
 <script lang='ts'>
-import ModalWindow from '../components/ModalWindow.vue'
 import BaseButton from '../components/BaseButton.vue'
 import { defineComponent } from 'vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
@@ -70,7 +67,6 @@ export default defineComponent({
         Field,
         Form,
         ErrorMessage,
-        ModalWindow,
         BaseButton
     },
     methods: {
@@ -145,7 +141,7 @@ export default defineComponent({
     margin-left: 5px;
     display: flex;
     flex-direction: column;
-    align-items: start;
+    align-items: flex-start;
     line-height: 1.3;
 }
 
