@@ -22,4 +22,8 @@ export default defineComponent({
 body {
 	font-family: Roboto, "Helvetica";
 }
+a {
+	text-decoration: none;
+	color: inherit;
+}
 </style>

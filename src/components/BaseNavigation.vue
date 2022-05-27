@@ -2,15 +2,17 @@
     <nav class="nav">
         <header class="profile">
             <div class="profile__item">
-                <img class="profile__image" src="../assets/images/default_profile_image.svg" width="40px" height="40px">
+                <img class="profile__image" src="@/assets/images/default_profile_image.svg" width="40px" height="40px">
             </div>
+
             <div class="profile__item">
                 <p class="profile__welcome">Здравствуйте,</p>
                 <p class="profile__user" >{{$store.getters.firstName}}</p>
             </div>
+
             <div class="profile__item">
                 <router-link :to="{name: 'profile'}">
-                    <button class="profile__button"></button>
+                    <button class="profile__setting-button"></button>
                 </router-link>
             </div>
         </header>
@@ -25,32 +27,43 @@
                             :inline="true" />
                         Лента активности</li>
                 </router-link>
+
                 <router-link :to="{name: 'tasks'}">
-                <li class="nav__item">
-                    <Icon icon="ion:clipboard"
-                        color="#757d8a"
-                        width="16"
-                        height="16"
-                        :inline="true" />
-                    Задачи</li>
+                    <li class="nav__item">
+                        <Icon icon="ion:clipboard"
+                            color="#757d8a"
+                            width="16"
+                            height="16"
+                            :inline="true" />
+                        Задачи</li>
                 </router-link>
-                <router-link :to="{name: 'crm'}">
-                <li class="nav__item">
+
+                <li class="nav__item" @click="crmToggle()">
                     <Icon icon="ion:logo-usd"
                         color="#757d8a"
                         width="16"
                         height="16"
                         :inline="true" />
                     CRM</li>
-                    </router-link>
-                <ul>
-                    <router-link :to="{name: 'deals'}">
-                        <li class="nav__item">Сделки</li>
-                    </router-link>
-                    <li class="nav__item">Компании</li>
-                    <li class="nav__item">Контакты</li>
-                    <li class="nav__item">Архивные сделки</li>
-                </ul>
+                <keep-alive>
+                    <ul :class="crmHidden ? 'hidden' : ''">
+                        <router-link :to="{name: 'deals'}">
+                            <li class="nav__item">Сделки</li>
+                        </router-link>
+
+                        <router-link :to="{name: 'companies'}">
+                            <li class="nav__item">Компании</li>
+                        </router-link>
+
+                        <router-link :to="{name: 'contacts'}">
+                            <li class="nav__item">Контакты</li>
+                        </router-link>
+
+                        <router-link :to="{name: 'archive-deals'}">
+                            <li class="nav__item">Архив сделок</li>
+                        </router-link>
+                    </ul>
+                </keep-alive>
                 <li class="nav__item">
                     <Icon icon="ion:file-tray-full"
                         color="#757d8a"
@@ -58,6 +71,7 @@
                         height="16"
                         :inline="true" />
                     Проекты</li>
+
                 <li class="nav__item">
                     <Icon icon="ion:wallet"
                         color="#757d8a"
@@ -65,13 +79,14 @@
                         height="16"
                         :inline="true" />
                     Финансы</li>
+
                 <li class="nav__item">
-                    <Icon icon="ion:people"
+                    <Icon icon="ion:browsers"
                         color="#757d8a"
                         width="16"
                         height="16"
                         :inline="true" />
-                    Команда</li>
+                    Отсчёты</li>
             </ul>
         </main>
         <footer>
@@ -83,6 +98,7 @@
                         height="16"
                         :inline="true" />
                     Поддержка</li>
+
                 <li class="nav__item" @click="signOut()">
                     <Icon icon="ion:power"
                         color="#757d8a"
@@ -97,17 +113,25 @@
 
 <script lang="ts">
 import { Icon } from '@iconify/vue'
-import { useStore } from '../store'
 import { defineComponent } from 'vue'
-const store = useStore()
+
 export default defineComponent({
+    name: 'BaseNavigation',
     components: {
 		Icon
 	},
-    name: 'BaseNavigation',
+    data () {
+        return {
+            crmHidden: true
+        }
+    },
     methods: {
+        crmToggle () {
+            this.crmHidden = !this.crmHidden
+        },
+
         async signOut () {
-            await store.dispatch('USER_SIGNOUT', 'Bye')
+            await this.$store.dispatch('USER_SIGNOUT', 'Bye')
             this.$router.push('/login')
         }
     }
@@ -126,7 +150,7 @@ export default defineComponent({
 }
 
 /* Profile block */
-@import "../assets/styles/profile.scss";
+@import "@/assets/styles/profile.scss";
 
 /* Nav content block */
 .nav__item {
@@ -147,5 +171,10 @@ export default defineComponent({
     position: absolute;
     bottom: 30px;
     width: 100%;
+}
+
+/* Other */
+.hidden {
+    display: none;
 }
 </style>

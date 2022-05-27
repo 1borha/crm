@@ -1,10 +1,10 @@
 import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import { store } from './store'
+import App from '@/App.vue'
+import router from '@/router'
+import { store } from '@/store'
 
-import PageLayout from './layouts/PageLayout.vue'
-import ModuleLayout from './layouts/ModuleLayout.vue'
+import PageLayout from '@/layouts/PageLayout.vue'
+import ModuleLayout from '@/layouts/ModuleLayout.vue'
 
 import firebase from 'firebase/compat/app'
 import 'firebase/compat/auth'
@@ -25,7 +25,31 @@ let app : unknown
 
 firebase.auth().onAuthStateChanged((user) => {
     store.dispatch('AUTO_USER_SIGNIN', user)
-    store.commit('setIsAuth', true)
+
+    if (user) {
+        const userStatusDatabaseRef = firebase.database().ref('/users/' + user?.uid + '/status/')
+
+        const isOfflineForDatabase = {
+            state: 'offline',
+            last_changed: firebase.database.ServerValue.TIMESTAMP
+        }
+
+        const isOnlineForDatabase = {
+            state: 'online',
+            last_changed: firebase.database.ServerValue.TIMESTAMP
+        }
+
+        firebase.database().ref('.info/connected').on('value', function (snapshot) {
+            if (snapshot.val() === false) {
+                return
+            }
+
+            userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(function () {
+                userStatusDatabaseRef.set(isOnlineForDatabase)
+            })
+        })
+    }
+
     if (!app) {
         createApp(App)
         .component('page-layout', PageLayout)

@@ -33,22 +33,46 @@ const routes: Array<RouteRecordRaw> = [
 		component: () => import('@/views/BaseTasks.vue')
 	},
 	{
-		path: '/crm',
-		name: 'crm',
-		meta: { auth: true, layout: 'page-layout' },
-		component: () => import('@/views/BaseCRM.vue')
-	},
-	{
 		path: '/deals',
 		name: 'deals',
 		meta: { auth: true, layout: 'page-layout' },
-		component: () => import('@/views/BaseDeals.vue')
+		component: () => import('@/views/deals/BaseDeals.vue')
+	},
+	{
+		path: '/deals/:id',
+		name: 'card-deal',
+		meta: { auth: true, layout: 'module-layout' },
+		component: () => import('@/views/deals/CardDeals.vue')
 	},
 	{
 		path: '/deals/create',
 		name: 'create-deal',
 		meta: { auth: true, layout: 'module-layout' },
-		component: () => import('@/views/CreateDeals.vue')
+		component: () => import('@/views/deals/CreateDeals.vue')
+	},
+	{
+		path: '/companies',
+		name: 'companies',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/BaseCompanies.vue')
+	},
+	{
+		path: '/companies/create',
+		name: 'create-company',
+		meta: { auth: true, layout: 'module-layout' },
+		component: () => import('@/views/CreateCompanies.vue')
+	},
+	{
+		path: '/contacts',
+		name: 'contacts',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/BaseContacts.vue')
+	},
+	{
+		path: '/archive-deals',
+		name: 'archive-deals',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/deals/ArchiveDeals.vue')
 	},
 	{
 		path: '/:catchAll(.*)',

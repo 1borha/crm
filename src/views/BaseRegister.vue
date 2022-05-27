@@ -25,6 +25,25 @@
                         placeholder="Введите вашу фамилию"
                         v-model.trim="userData.lastName" />
 
+                    <select class="register__select" v-model="userData.role">
+                        <option value="Менеджер информационных систем">Менеджер информационных систем</option>
+                        <option value="IT специалист">IT специалист</option>
+                        <option value="Администратор">Администратор</option>
+                        <option value="Директор по маркетингу">Директор по маркетингу</option>
+                        <option value="Менеджер по работе с клиентами">Менеджер по работе с клиентами</option>
+                        <option value="Директор по развитию отношений с клиентами">Директор по развитию отношений с клиентами</option>
+                        <option value="Бухгалтер">Бухгалтер</option>
+                        <option value="Главный исполнительный директор">Главный исполнительный директор</option>
+                    </select>
+
+                    <select class="register__select" v-model="userData.status">
+                        <option value="Начальный уровень">Начальный уровень</option>
+                        <option value="Средний уровень">Средний уровень</option>
+                        <option value="Высокий уровень">Высокий уровень</option>
+                        <option value="Продвинутый уровень">Продвинутый уровень</option>
+                        <option value="Экспертный уровень">Экспертный уровень</option>
+                    </select>
+
                     <Field class="register__input"
                         type="password"
                         name="password"
@@ -55,16 +74,20 @@
 </template>
 
 <script lang='ts'>
-import BaseButton from '../components/BaseButton.vue'
+import BaseButton from '@/components/BaseButton.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 import { defineComponent } from 'vue'
-import { useStore } from '../store'
 import { FirebaseError } from '@firebase/util'
-const store = useStore()
 
 export default defineComponent({
     name: 'BaseRegister',
+    components: {
+        Field,
+        Form,
+        ErrorMessage,
+        BaseButton
+    },
     data () {
         const validationRules = yup.object({
             email: yup.string()
@@ -94,7 +117,9 @@ export default defineComponent({
             userData: {
                 email: '',
                 firstName: '',
-                lastName: ''
+                lastName: '',
+                role: '',
+                status: ''
             },
             password: '',
             confirmPassword: '',
@@ -102,20 +127,19 @@ export default defineComponent({
             validationRules
         }
     },
-    components: {
-        Field,
-        Form,
-        ErrorMessage,
-        BaseButton
-    },
     methods: {
         async submitHandler () {
             try {
                 this.submitError = ''
-                const userData = this.userData
 
-                store.commit('setUser', userData)
-                await store.dispatch('USER_REGISTER', this.password)
+                const userData = this.userData
+                const password = this.password
+                const user = {
+                    userData,
+                    password
+                }
+
+                await this.$store.dispatch('USER_REGISTER', user)
                 this.$router.push('/')
             } catch (e: unknown) {
                 if (e instanceof FirebaseError) {
@@ -159,10 +183,13 @@ export default defineComponent({
 
 .register__content {
     width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 
-.register__input {
-    width: 100%;
+.register__input, .register__select {
+    max-width: 100%;
     margin-bottom: 20px;
     padding: 15px;
     font-size: 16px;
@@ -172,6 +199,17 @@ export default defineComponent({
     &:focus {
         box-shadow: 0 0 10px #E2E6FF;
     }
+}
+
+.register__select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('../assets/images/particles/down-arrow.svg');
+    background-size: 5%;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    background-position-x: calc(100% - 15px);
 }
 
 .register__button {

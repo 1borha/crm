@@ -1,10 +1,11 @@
 import { GetterTree, MutationTree, ActionContext, CommitOptions } from 'vuex'
 import firebase from 'firebase/compat/app'
-import { initState } from '../initState'
+import { initState } from '@/store/initState'
 
 type State = typeof initState
 
 interface DealsPayload {
+    id: string,
     name: string,
     amount: number,
     amountCurrency: string,
@@ -20,7 +21,9 @@ interface DealsPayload {
 
 export type MutationPayload = {
     setDeals: DealsPayload,
-    addDeal: object
+    addDeal: DealsPayload,
+    removeDeal: string,
+    setDeal: {id: string, name: string, amount: string, status: string, result: string}
 }
 
 type Mutations = {
@@ -33,19 +36,37 @@ type Mutations = {
 export const mutations: MutationTree<State> & Mutations = {
     setDeals ({ deals }, payload) {
         const arr = []
-        const modDeals = Object.values(payload)
 
-        for (let index = 0; index < modDeals.length; index++) {
-            arr.push(modDeals[index])
+        if (payload) {
+            const modDeals = Object.values(payload)
+
+            for (let index = 0; index < modDeals.length; index++) {
+                arr.push(modDeals[index])
+            }
         }
 
         deals.deals = arr
     },
 
     addDeal ({ deals }, payload) {
-        const modDeals = Object.values(payload)
-        for (let index = 0; index < modDeals.length; index++) {
-            deals.deals.push(modDeals[index])
+        deals.deals.push(payload)
+    },
+
+    removeDeal ({ deals }, payload) {
+        deals.deals = deals.deals.filter(item => {
+            return item.id !== payload
+        })
+    },
+
+    setDeal ({ deals }, payload) {
+        const deal = deals.deals.find(item => {
+            return item.id === payload.id
+        })
+        if (deal) {
+            deal.name = payload.name
+            deal.amount = +payload.amount
+            deal.status = payload.status
+            deal.result = payload.result
         }
     }
 }
@@ -55,39 +76,43 @@ export const mutations: MutationTree<State> & Mutations = {
 */
 
 export type Getters = {
-    getNewDeals (
+    getDealsByStatus (
         state: State,
-        payload: string
-    ) : DealsPayload[],
-
-    getPresintationsDeals (
+        payload: void
+    ) : (payload : string) => DealsPayload[],
+    getSortedDealsByStatus (
         state: State,
-        payload: string
-    ) : DealsPayload[],
-
-    getNegotiatingDeals (
+        payload: void
+    ) : (payload: string, text: string) => DealsPayload[],
+    getDeal (
         state: State,
-        payload: string
-    ) : DealsPayload[],
-
-    getEndDeals (
-        state: State,
-        payload: string
-    ) : DealsPayload[],
+        payload: void
+    ) : (payload : string) => DealsPayload[]
 }
 
 export const getters: GetterTree<State, State> & Getters = {
-    getNewDeals: ({ deals }) => {
-        return deals.deals.filter(item => item.status === 'new')
+    getDealsByStatus: ({ deals }) => (payload : string) => {
+        return [...deals.deals].filter((item) => {
+            return (item.status.toLowerCase()).includes(payload.toLowerCase())
+        })
     },
-    getPresintationsDeals: ({ deals }) => {
-        return deals.deals.filter(item => item.status === 'presintations')
+    getSortedDealsByStatus: (state) => (payload: string, text: string) => {
+        return getters.getDealsByStatus(state)(payload).filter(item => {
+            const name = item.name.toLowerCase()
+            const amount = item.amount.toString()
+            const date = item.date.toLowerCase()
+            const creator = item.creator.toLowerCase()
+
+            return name.includes(text.toLowerCase()) ||
+                amount.includes(text.toLowerCase()) ||
+                creator.includes(text.toLowerCase()) ||
+                date.includes(text.toLowerCase())
+        })
     },
-    getNegotiatingDeals: ({ deals }) => {
-        return deals.deals.filter(item => item.status === 'negotiating')
-    },
-    getEndDeals: ({ deals }) => {
-        return deals.deals.filter(item => item.status === 'end')
+    getDeal: ({ deals }) => (payload : string) => {
+        return [...deals.deals].filter((item) => {
+            return (item.id.toLowerCase()).includes(payload.toLowerCase())
+        })
     }
 }
 
@@ -97,7 +122,9 @@ export const getters: GetterTree<State, State> & Getters = {
 
 export type ActionsPayload = {
     GET_DEALS: [payload: string, returnVal: void],
-    ADD_DEAL: [payload: DealsPayload, returnVal: void]
+    ADD_DEAL: [payload: DealsPayload, returnVal: void],
+    CHANGE_DEAL: [payload: {id: string, name: string, amount: string, status: string, result: string}, returnVal: void],
+    ARCHIVE_DEAL: [payload: string, returnVal: void]
 }
 
 type AugmentedActionContext = {
@@ -127,8 +154,41 @@ export const actions: Actions = {
         dealData.date = new Date().toLocaleDateString()
 
         try {
-            await firebase.database().ref('deals/').push(dealData)
+            const newDeal = await firebase.database().ref('deals/').push()
+            const dealId = newDeal.key
+            // eslint-disable-next-line
+            dealData.id = dealId!
+            newDeal.set(dealData)
             commit('addDeal', dealData)
+        } catch (e) {
+            console.log(e)
+            throw e
+        }
+    },
+
+    async CHANGE_DEAL ({ commit }, payload) {
+        try {
+            await firebase.database().ref('deals/' + payload.id + '/').update({
+                name: payload.name,
+                amount: payload.amount,
+                status: payload.status,
+                result: payload.result
+            })
+            commit('setDeal', payload)
+        } catch (e) {
+            console.log(e)
+            throw e
+        }
+    },
+
+    async ARCHIVE_DEAL ({ commit }, payload) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const deal: {[k: string]: any} = await (await firebase.database().ref('deals/' + payload).get()).val()
+            deal.archiveDate = new Date().toLocaleDateString()
+            await firebase.database().ref('deals_archive/' + payload).set(deal)
+            await firebase.database().ref('deals/' + payload).remove()
+            commit('removeDeal', payload)
         } catch (e) {
             console.log(e)
             throw e

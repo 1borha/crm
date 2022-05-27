@@ -1,7 +1,8 @@
 <template>
-    <header>Профиль</header>
-    <div class="profile">
-        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+    <div class="root">
+        <header>Профиль</header>
+        <main class="profile">
+            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
                 <fieldset class="profile__fieldset">
                     <div class="profile__content">
                         <Field class="profile__input"
@@ -35,22 +36,21 @@
                             placeholder="Новый пароль"
                             v-model="credential.newPassword" />
                         <ErrorMessage class="error" name="newPassword" />
+                        <div class="error" v-if="submitError != ''">{{submitError}}</div>
                     </div>
-                    <BaseButton class="profile__button">Сохранить изменения</BaseButton>
-                    <div class="error" v-if="submitError != ''">{{submitError}}</div>
+                    <BaseButton class="profile__button" id="test">Сохранить изменения</BaseButton>
                 </fieldset>
             </Form>
+        </main>
     </div>
 </template>
 
 <script lang='ts'>
-import BaseButton from '../components/BaseButton.vue'
+import BaseButton from '@/components/BaseButton.vue'
 import { defineComponent } from 'vue'
 import { Field, Form, ErrorMessage, configure } from 'vee-validate'
 import * as yup from 'yup'
-import { useStore } from '../store'
 import { FirebaseError } from '@firebase/util'
-const store = useStore()
 
 configure({
   validateOnBlur: false, // controls if `blur` events should trigger validation with `handleChange` handler
@@ -61,6 +61,12 @@ configure({
 
 export default defineComponent({
     name: 'BaseProfile',
+    components: {
+        BaseButton,
+        Form,
+        Field,
+        ErrorMessage
+    },
     data () {
         const validationRules = yup.object({
             firstName: yup.string()
@@ -97,17 +103,11 @@ export default defineComponent({
             validationRules
         }
     },
-    components: {
-        BaseButton,
-        Form,
-        Field,
-        ErrorMessage
-    },
     methods: {
         async submitHandler () {
             if (this.userData.firstName !== '') {
                 try {
-                    await store.dispatch('CHANGE_FIRSTNAME', this.userData.firstName)
+                    await this.$store.dispatch('CHANGE_FIRSTNAME', this.userData.firstName)
                 } catch (e: unknown) {
                     if (e instanceof FirebaseError) {
                         const err = e.code
@@ -121,7 +121,7 @@ export default defineComponent({
             }
             if (this.userData.lastName !== '') {
                 try {
-                    await store.dispatch('CHANGE_LASTNAME', this.userData.lastName)
+                    await this.$store.dispatch('CHANGE_LASTNAME', this.userData.lastName)
                 } catch (e: unknown) {
                     if (e instanceof FirebaseError) {
                         const err = e.code
@@ -135,7 +135,7 @@ export default defineComponent({
             }
             if (this.credential.newPassword) {
                 try {
-                    await store.dispatch('CHANGE_PASSWORD', this.credential)
+                    await this.$store.dispatch('CHANGE_PASSWORD', this.credential)
                 } catch (e: unknown) {
                     if (e instanceof FirebaseError) {
                         const err = e.code

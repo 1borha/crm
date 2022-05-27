@@ -9,7 +9,7 @@
                 <div class="deals__content">
                     <Field
                         class="deals__input"
-                        type="string"
+                        type="text"
                         name="name"
                         id="name"
                         placeholder="Введите название сделки"
@@ -24,23 +24,25 @@
                         v-model="deal.amount" />
 
                     <div class="deals__selects">
-                        <select class="deals__select" v-model="deal.status">
+                        <Field name="status" as="select" class="deals__select" v-model="deal.status">
                             <option value="new">Новая</option>
                             <option value="presintations">Презентация</option>
                             <option value="negotiating">Переговоры</option>
                             <option value="end">Завершена</option>
-                        </select>
+                        </Field>
 
-                        <select v-if="deal.status === 'end'" class="deals__select" v-model="deal.result">
-                            <option value="win">Удачная</option>
-                            <option value="lose">Неудачная</option>
-                        </select>
+                        <Field name="result" as="select" class="deals__select" v-model="deal.result">
+                            <option :disabled="(deal.status === 'end')" value="none"></option>
+                            <option :disabled="(deal.status !== 'end')" value="win">Удачная</option>
+                            <option :disabled="deal.status !== 'end'" value="lose">Неудачная</option>
+                        </Field>
                     </div>
 
                     <div class="errors">
                         <ErrorMessage class="error" name="name" />
                         <ErrorMessage class="error" name="amount" />
-                        <div v-if="submitError">{{submitError}}</div>
+                        <ErrorMessage class="error" name="status" />
+                        <div class="error" v-if="submitError">{{submitError}}</div>
                     </div>
                 </div>
                 <BaseButton type="submit" class="deals__button">Создать</BaseButton>
@@ -50,16 +52,22 @@
 </template>
 
 <script lang="ts">
-import BaseButton from '../components/BaseButton.vue'
-import CloseButton from '../components/CloseButton.vue'
+import BaseButton from '@/components/BaseButton.vue'
+import CloseButton from '@/components/CloseButton.vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
 import { defineComponent } from 'vue'
-import { useStore } from '../store'
 import { FirebaseError } from '@firebase/util'
-const store = useStore()
+
 export default defineComponent({
     name: 'CreateDeals',
+    components: {
+        BaseButton,
+        CloseButton,
+        Field,
+        ErrorMessage,
+        Form
+    },
     data () {
         const validationRules = yup.object({
             name: yup.string()
@@ -67,11 +75,15 @@ export default defineComponent({
 
             amount: yup.number()
                 .typeError('Значение должно быть числом')
-                .required('Поле значение обязательное!')
+                .required('Поле значение обязательное!'),
+
+            status: yup.string()
+                .required('Поле статус обязательное!')
         })
 
         return {
             deal: {
+                id: '',
                 amountCurrency: 'ru',
                 date: '',
                 creator: '',
@@ -84,28 +96,21 @@ export default defineComponent({
             validationRules
         }
     },
-    components: {
-        BaseButton,
-        CloseButton,
-        Field,
-        ErrorMessage,
-        Form
-    },
     methods: {
-        closeWindow () {
-            console.log('i`m work')
-        },
         async submitHandler () {
             try {
                 this.submitError = ''
                 const data = this.deal
-                data.creator = store.state.auth.user.firstName + ' ' + store.state.auth.user.lastName
+                data.creator = this.$store.state.auth.user.firstName + ' ' + this.$store.state.auth.user.lastName
 
                 if (data.status !== 'end') {
                     data.result = 'none'
+                } else if (data.status === 'end' && data.result === 'none') {
+                    this.submitError = 'Выберите результат!'
+                    return
                 }
 
-                await store.dispatch('ADD_DEAL', data)
+                await this.$store.dispatch('ADD_DEAL', data)
             } catch (e: unknown) {
                 if (e instanceof FirebaseError) {
                     this.submitError = e.code
@@ -176,7 +181,7 @@ export default defineComponent({
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('../assets/images/particles/down-arrow.svg');
+    background-image: url('@/assets/images/particles/down-arrow.svg');
     background-size: 10%;
     background-repeat: no-repeat;
     background-position-y: center;

@@ -1,27 +1,27 @@
 <template>
     <div class="table">
         <div class="column">
-            <h1 class="column__title" style="background-color: #3366FF">Новые</h1>
-            <div class="column__elements">Элементов: {{$store.getters.getNewDeals.length}}</div>
-            <DealsColumn :deals="$store.getters.getNewDeals" />
+            <h1 class="column__title" style="background-color: #000099">Новые</h1>
+            <div class="column__elements">Элементов: {{$store.getters.getDealsByStatus('new').length}}</div>
+            <DealsColumn :deals="$store.getters.getSortedDealsByStatus('new', text)" />
         </div>
 
         <div class="column">
-            <h1 class="column__title" style="background-color: #FF3366">Презентации</h1>
-            <div class="column__elements">Элементов: {{$store.getters.getPresintationsDeals.length}}</div>
-            <DealsColumn :deals="$store.getters.getPresintationsDeals" />
+            <h1 class="column__title" style="background-color: #990000">Презентации</h1>
+            <div class="column__elements">Элементов: {{$store.getters.getDealsByStatus('presintations').length}}</div>
+            <DealsColumn :deals="$store.getters.getSortedDealsByStatus('presintations', text)" />
         </div>
 
         <div class="column">
-            <h1 class="column__title" style="background-color: #FFCC33">Переговоры</h1>
-            <div class="column__elements">Элементов: {{$store.getters.getNegotiatingDeals.length}}</div>
-            <DealsColumn :deals="$store.getters.getNegotiatingDeals" />
+            <h1 class="column__title" style="background-color: #996600">Переговоры</h1>
+            <div class="column__elements">Элементов: {{$store.getters.getDealsByStatus('negotiating').length}}</div>
+            <DealsColumn :deals="$store.getters.getSortedDealsByStatus('negotiating', text)" />
         </div>
 
         <div class="column">
-            <h1 class="column__title" style="background-color: #66FF33">Завершённые</h1>
-            <div class="column__elements">Элементов: {{$store.getters.getEndDeals.length}}</div>
-            <DealsColumn :deals="$store.getters.getEndDeals" />
+            <h1 class="column__title" style="background-color: #009900">Завершённые</h1>
+            <div class="column__elements">Элементов: {{$store.getters.getDealsByStatus('end').length}}</div>
+            <DealsColumn :deals="$store.getters.getSortedDealsByStatus('end', text)" />
         </div>
     </div>
 </template>
@@ -30,6 +30,13 @@
 import DealsColumn from './DealsColumn.vue'
 import { defineComponent } from 'vue'
 export default defineComponent({
+    name: 'DealsTable',
+    props: {
+        text: {
+            type: String,
+            required: true
+        }
+    },
     components: {
         DealsColumn
     }

@@ -6,6 +6,7 @@
 import DealsItem from './DealsItem.vue'
 import { defineComponent, PropType } from 'vue'
 export default defineComponent({
+    name: 'DealsColumn',
     components: {
         DealsItem
     },

@@ -5,10 +5,14 @@ import {
 	DispatchOptions,
 	createLogger
 } from 'vuex'
-import { initState } from './initState'
-import * as moduleAuth from './auth/auth.index'
-import * as moduleLayouts from './layouts/layouts.index'
-import * as moduleDeals from './deals/deals.index'
+import { initState } from '@/store/initState'
+
+import * as moduleAuth from '@/store//auth/auth.index'
+import * as moduleLayouts from '@/store//layouts/layouts.index'
+import * as moduleDeals from '@/store//deals/deals.index'
+import * as moduleArchiveDeals from '@/store//deals/deals.archive'
+import * as moduleCompanies from '@/store//companies/companies.index'
+import * as moduleContacts from '@/store//contacts/contacts.index'
 
 export type State = typeof initState;
 
@@ -19,17 +23,54 @@ if (process.env.NODE_ENV === 'development') {
 
 export const store = createStore({
 	state: initState,
-	mutations: { ...moduleAuth.mutations, ...moduleLayouts.mutations, ...moduleDeals.mutations },
-	getters: { ...moduleAuth.getters, ...moduleLayouts.getters, ...moduleDeals.getters },
-	actions: { ...moduleAuth.actions, ...moduleDeals.actions },
+	mutations: {
+    ...moduleAuth.mutations,
+    ...moduleLayouts.mutations,
+    ...moduleDeals.mutations,
+    ...moduleArchiveDeals.mutations,
+    ...moduleCompanies.mutations,
+    ...moduleContacts.mutations
+    },
+	getters: {
+    ...moduleAuth.getters,
+    ...moduleLayouts.getters,
+    ...moduleDeals.getters,
+    ...moduleArchiveDeals.getters,
+    ...moduleCompanies.getters,
+    ...moduleContacts.getters
+  },
+	actions: {
+    ...moduleAuth.actions,
+    ...moduleDeals.actions,
+    ...moduleArchiveDeals.actions,
+    ...moduleCompanies.actions,
+    ...moduleContacts.actions
+  },
 	plugins
 })
 
-type MutationPayload = moduleAuth.MutationPayload & moduleLayouts.MutationPayload & moduleDeals.MutationPayload
+type MutationPayload =
+  moduleAuth.MutationPayload &
+  moduleLayouts.MutationPayload &
+  moduleDeals.MutationPayload &
+  moduleArchiveDeals.MutationPayload &
+  moduleCompanies.MutationPayload &
+  moduleContacts.MutationPayload
 
-type ActionsPayload = moduleAuth.ActionsPayload & moduleDeals.ActionsPayload
+type ActionsPayload =
+  moduleAuth.ActionsPayload &
+  moduleDeals.ActionsPayload &
+  moduleArchiveDeals.ActionsPayload &
+  moduleCompanies.ActionsPayload &
+  moduleContacts.ActionsPayload
 
-type Getters = moduleAuth.Getters & moduleLayouts.Getters & moduleDeals.Getters
+type Getters =
+  moduleAuth.Getters &
+  moduleLayouts.Getters &
+  moduleDeals.Getters &
+  moduleArchiveDeals.Getters &
+  moduleCompanies.Getters &
+  moduleContacts.Getters
 
 /*
   ---------------------- no change code ----------------------

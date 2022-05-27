@@ -23,7 +23,7 @@
                         <ErrorMessage class="error" name="password" />
                         <div class="error" v-if="submitError != ''">{{submitError}}</div>
                     </div>
-                    </div>
+                </div>
                 <BaseButton class="login__button">Войти</BaseButton>
             </fieldset>
         </Form>
@@ -31,16 +31,20 @@
 </template>
 
 <script lang='ts'>
-import BaseButton from '../components/BaseButton.vue'
+import BaseButton from '@/components/BaseButton.vue'
 import { defineComponent } from 'vue'
 import { Field, Form, ErrorMessage } from 'vee-validate'
 import * as yup from 'yup'
-import { useStore } from '../store'
 import { FirebaseError } from '@firebase/util'
-const store = useStore()
 
 export default defineComponent({
     name: 'BaseLogin',
+    components: {
+        Field,
+        Form,
+        ErrorMessage,
+        BaseButton
+    },
     data () {
         const validationRules = yup.object({
             email: yup.string()
@@ -63,20 +67,19 @@ export default defineComponent({
             submitError: ''
         }
     },
-    components: {
-        Field,
-        Form,
-        ErrorMessage,
-        BaseButton
-    },
     methods: {
         async submitHandler () {
             try {
                 this.submitError = ''
-                const userData = this.userData
 
-                store.commit('setUser', userData)
-                await store.dispatch('USER_SIGNIN', this.password)
+                const userData = this.userData
+                const password = this.password
+                const user = {
+                    userData,
+                    password
+                }
+
+                await this.$store.dispatch('USER_SIGNIN', user)
                 this.$router.push('/')
             } catch (e: unknown) {
                 if (e instanceof FirebaseError) {

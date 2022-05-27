@@ -1,5 +1,5 @@
 import { GetterTree, MutationTree } from 'vuex'
-import { initState } from '../initState'
+import { initState } from '@/store/initState'
 
 type State = typeof initState
 

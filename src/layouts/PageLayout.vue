@@ -17,9 +17,15 @@ export default {
 </script>
 
 <style lang="scss">
+.page {
+	margin-left: 250px;
+}
+
 .page header {
-    margin: 46px 30px;
+    margin: 0 30px;
+    min-height: 114px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
     font-size: 28px;
     font-weight: 700;
@@ -37,7 +43,7 @@ export default {
     }
 }
 
-.page {
-	margin-left: 250px;
+.page main {
+    margin-top: 30px;
 }
 </style>
