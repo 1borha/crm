@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+
 interface PropsInterface {
     id: string,
     name: string,
@@ -21,6 +22,7 @@ interface PropsInterface {
     archiveDate: string,
     creator: string,
 }
+
 export default defineComponent({
     name: 'DealsArchiveItem',
     props: {

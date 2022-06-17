@@ -1,8 +1,10 @@
 <template>
     <div class="root">
-        <header>Профиль</header>
+        <header>
+            <h1>Профиль</h1>
+        </header>
         <main class="profile">
-            <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+            <Form name='form' @submit="submitHandler()" :rules="submitHandler" :validation-schema="validationRules">
                 <fieldset class="profile__fieldset">
                     <div class="profile__content">
                         <Field class="profile__input"
@@ -26,7 +28,8 @@
                             name="password"
                             id="password"
                             placeholder="Пароль"
-                            v-model="credential.password" />
+                            v-model="credential.password"
+                            autocomplete="on" />
                         <ErrorMessage class="error" name="password" />
 
                         <Field class="profile__input"
@@ -34,7 +37,8 @@
                             name="newPassword"
                             id="newPassword"
                             placeholder="Новый пароль"
-                            v-model="credential.newPassword" />
+                            v-model="credential.newPassword"
+                            autocomplete="off" />
                         <ErrorMessage class="error" name="newPassword" />
                         <div class="error" v-if="submitError != ''">{{submitError}}</div>
                     </div>

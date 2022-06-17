@@ -23,14 +23,14 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
     name: 'ContactsTable',
+    components: {
+        ContactsItem
+    },
     props: {
         text: {
             type: String,
             required: true
         }
-    },
-    components: {
-        ContactsItem
     },
     data () {
         return {

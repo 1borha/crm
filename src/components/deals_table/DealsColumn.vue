@@ -5,6 +5,7 @@
 <script lang="ts">
 import DealsItem from './DealsItem.vue'
 import { defineComponent, PropType } from 'vue'
+
 export default defineComponent({
     name: 'DealsColumn',
     components: {
@@ -18,6 +19,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style lang="scss" scoped>
-</style>

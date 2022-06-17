@@ -1,8 +1,8 @@
 <template>
     <div class="companies">
-        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+        <Form name='form' @submit="submitHandler()" :rules="submitHandler" :validation-schema="validationRules">
             <fieldset class="companies__fieldset">
-                <legend class="companies__header"><p>Добавить компанию</p></legend>
+                <legend class="companies__header"><h2>Добавить компанию</h2></legend>
 
                 <CloseButton class="companies__close"/>
 
@@ -101,9 +101,10 @@ export default defineComponent({
                 name: '',
                 email: '',
                 phone: '',
-                lifeStage: '',
+                lifeStage: 'Инициация',
                 owner: '',
-                createdAt: ''
+                createdAt: '',
+                projects: []
             },
             submitError: '',
             validationRules
@@ -144,7 +145,7 @@ export default defineComponent({
     text-align: center;
 }
 
-.companies__header p {
+.companies__header h2 {
     margin: 30px 0;
     font-size: 48px;
 }
@@ -180,7 +181,7 @@ export default defineComponent({
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    background-image: url('../assets/images/particles/down-arrow.svg');
+    background-image: url('@/assets/images/particles/down-arrow.svg');
     background-size: 5%;
     background-repeat: no-repeat;
     background-position-y: center;

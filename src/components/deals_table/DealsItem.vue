@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+
 interface PropsInterface {
     id: string,
     name: string,
@@ -19,6 +20,7 @@ interface PropsInterface {
     creator: string,
     result: string
 }
+
 export default defineComponent({
     name: 'DealsItem',
     props: {

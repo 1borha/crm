@@ -38,6 +38,16 @@
                         Задачи</li>
                 </router-link>
 
+                <router-link :to="{name: 'my-tasks'}">
+                    <li class="nav__item">
+                        <Icon icon="ion:browsers"
+                            color="#757d8a"
+                            width="16"
+                            height="16"
+                            :inline="true" />
+                        Мои задачи</li>
+                </router-link>
+
                 <li class="nav__item" @click="crmToggle()">
                     <Icon icon="ion:logo-usd"
                         color="#757d8a"
@@ -45,7 +55,7 @@
                         height="16"
                         :inline="true" />
                     CRM</li>
-                <keep-alive>
+
                     <ul :class="crmHidden ? 'hidden' : ''">
                         <router-link :to="{name: 'deals'}">
                             <li class="nav__item">Сделки</li>
@@ -63,41 +73,29 @@
                             <li class="nav__item">Архив сделок</li>
                         </router-link>
                     </ul>
-                </keep-alive>
-                <li class="nav__item">
-                    <Icon icon="ion:file-tray-full"
-                        color="#757d8a"
-                        width="16"
-                        height="16"
-                        :inline="true" />
-                    Проекты</li>
 
-                <li class="nav__item">
-                    <Icon icon="ion:wallet"
-                        color="#757d8a"
-                        width="16"
-                        height="16"
-                        :inline="true" />
-                    Финансы</li>
-
-                <li class="nav__item">
-                    <Icon icon="ion:browsers"
-                        color="#757d8a"
-                        width="16"
-                        height="16"
-                        :inline="true" />
-                    Отсчёты</li>
+                <router-link :to="{name: 'projects'}">
+                    <li class="nav__item">
+                        <Icon icon="ion:file-tray-full"
+                            color="#757d8a"
+                            width="16"
+                            height="16"
+                            :inline="true" />
+                        Проекты</li>
+                </router-link>
             </ul>
         </main>
         <footer>
             <ul class="nav__footer">
-                <li class="nav__item">
-                    <Icon icon="ion:shield-checkmark"
-                        color="#757d8a"
-                        width="16"
-                        height="16"
-                        :inline="true" />
-                    Поддержка</li>
+                <a href="https://github.com/1borha/crm/issues" target="_blank">
+                    <li class="nav__item">
+                        <Icon icon="ion:shield-checkmark"
+                            color="#757d8a"
+                            width="16"
+                            height="16"
+                            :inline="true" />
+                        Поддержка</li>
+                </a>
 
                 <li class="nav__item" @click="signOut()">
                     <Icon icon="ion:power"

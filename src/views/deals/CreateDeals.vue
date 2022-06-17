@@ -1,8 +1,8 @@
 <template>
     <div class="deals">
-        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+        <Form name='form' @submit="submitHandler()" :rules="submitHandler" :validation-schema="validationRules">
             <fieldset class="deals__fieldset">
-                <legend class="deals__header"><p>Создать сделку</p></legend>
+                <legend class="deals__header"><h2>Создать сделку</h2></legend>
 
                 <CloseButton class="deals__close"/>
 
@@ -89,7 +89,7 @@ export default defineComponent({
                 creator: '',
                 name: '',
                 amount: 0,
-                status: '',
+                status: 'new',
                 result: 'none'
             },
             submitError: '',
@@ -139,7 +139,7 @@ export default defineComponent({
     text-align: center;
 }
 
-.deals__header p {
+.deals__header h2 {
     margin: 30px 0;
     font-size: 48px;
 }

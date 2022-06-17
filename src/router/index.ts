@@ -6,7 +6,7 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/',
 		name: 'home',
 		meta: { auth: true, layout: 'page-layout' },
-		component: () => import('@/App.vue')
+		component: () => import('@/views/BaseFeed.vue')
 	},
 	{
 		path: '/login',
@@ -30,7 +30,19 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/tasks',
 		name: 'tasks',
 		meta: { auth: true, layout: 'page-layout' },
-		component: () => import('@/views/BaseTasks.vue')
+		component: () => import('@/views/tasks/BaseTasks.vue')
+	},
+	{
+		path: '/tasks/create',
+		name: 'create-task',
+		meta: { auth: true, layout: 'module-layout' },
+		component: () => import('@/views/tasks/CreateTasks.vue')
+	},
+	{
+		path: '/my-tasks',
+		name: 'my-tasks',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/tasks/MyTasks.vue')
 	},
 	{
 		path: '/deals',
@@ -54,13 +66,13 @@ const routes: Array<RouteRecordRaw> = [
 		path: '/companies',
 		name: 'companies',
 		meta: { auth: true, layout: 'page-layout' },
-		component: () => import('@/views/BaseCompanies.vue')
+		component: () => import('@/views/companies/BaseCompanies.vue')
 	},
 	{
 		path: '/companies/create',
 		name: 'create-company',
 		meta: { auth: true, layout: 'module-layout' },
-		component: () => import('@/views/CreateCompanies.vue')
+		component: () => import('@/views/companies/CreateCompanies.vue')
 	},
 	{
 		path: '/contacts',
@@ -73,6 +85,18 @@ const routes: Array<RouteRecordRaw> = [
 		name: 'archive-deals',
 		meta: { auth: true, layout: 'page-layout' },
 		component: () => import('@/views/deals/ArchiveDeals.vue')
+	},
+	{
+		path: '/projects',
+		name: 'projects',
+		meta: { auth: true, layout: 'page-layout' },
+		component: () => import('@/views/projects/BaseProjects.vue')
+	},
+	{
+		path: '/projects/create',
+		name: 'create-project',
+		meta: { auth: true, layout: 'module-layout' },
+		component: () => import('@/views/projects/CreateProjects.vue')
 	},
 	{
 		path: '/:catchAll(.*)',

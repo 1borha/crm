@@ -14,6 +14,23 @@ export const initState = {
         layout: 'default-layout'
     },
 
+    tasks: {
+        tasks: [
+            {
+                id: '',
+                name: '',
+                createdBy: '',
+                deadline: '',
+                responsiblePerson: '',
+                completed: 'no',
+                crmType: '',
+                crm: '',
+                crmName: '',
+                tags: ['']
+            }
+        ]
+    },
+
     deals: {
         deals: [
             {
@@ -53,7 +70,30 @@ export const initState = {
                 phone: '',
                 lifeStage: '',
                 owner: '',
-                createdAt: ''
+                createdAt: '',
+                projects: [
+                    {
+                        id: '',
+                        name: '',
+                        company: '',
+                        createDate: '',
+                        description: '',
+                        tasks: [
+                            {
+                                id: '',
+                                name: '',
+                                createdBy: '',
+                                deadline: '',
+                                responsiblePerson: '',
+                                completed: 'no',
+                                crmType: 'companies',
+                                crm: '',
+                                crmName: '',
+                                tags: ['']
+                            }
+                        ]
+                    }
+                ]
             }
         ]
     },
@@ -72,6 +112,32 @@ export const initState = {
                     last_changed: 0,
                     state: 'offline'
                 }
+            }
+        ]
+    },
+
+    projects: {
+        projects: [
+            {
+                id: '',
+                name: '',
+                company: '',
+                createDate: '',
+                description: '',
+                tasks: [
+                    {
+                        id: '',
+                        name: '',
+                        createdBy: '',
+                        deadline: '',
+                        responsiblePerson: '',
+                        completed: 'no',
+                        crmType: 'companies',
+                        crm: '',
+                        crmName: '',
+                        tags: ['']
+                    }
+                ]
             }
         ]
     }

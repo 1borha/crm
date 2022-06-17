@@ -1,8 +1,8 @@
 <template>
     <div class="login">
-        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+        <Form name='form' @submit="submitHandler()" :rules="submitHandler" :validation-schema="validationRules">
             <fieldset class="login__fieldset">
-                <legend class="login__header"><p>Логин</p></legend>
+                <legend class="login__header"><h2>Логин</h2></legend>
                 <div class="login__content">
                     <Field class="login__input"
                         type="email"
@@ -16,7 +16,8 @@
                         name="password"
                         id="password"
                         placeholder="Введите ваш пароль"
-                        v-model="password" />
+                        v-model="password"
+                        autocomplete="on" />
 
                     <div class="errors">
                         <ErrorMessage class="error" name="email" />
@@ -25,6 +26,9 @@
                     </div>
                 </div>
                 <BaseButton class="login__button">Войти</BaseButton>
+                <router-link class="login__register" :to="{name: 'register'}">
+                    Зарегистрироваться
+                </router-link>
             </fieldset>
         </Form>
     </div>
@@ -99,10 +103,11 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .login {
+    position: relative;
     margin: 30px auto;
     padding: 25px 0;
     width: 50%;
-    min-height: 40%;
+    min-height: 30%;
     background-color: #F8F8F8;
     border-radius: 10px;
 }
@@ -114,7 +119,7 @@ export default defineComponent({
     text-align: center;
 }
 
-.login__header p {
+.login__header h2 {
     margin: 30px 0;
     font-size: 48px;
 }
@@ -138,8 +143,19 @@ export default defineComponent({
 
 .login__button {
     margin-top: 10px;
+    margin-bottom: 30px;
 }
 
+.login__register {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;
+    transform: translateX(-50%);
+    color: #5B6AD0;
+    &:active {
+        color: #2B3AA0;
+    }
+}
 .errors {
     margin-left: 5px;
     display: flex;

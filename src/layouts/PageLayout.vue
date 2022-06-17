@@ -21,7 +21,7 @@ export default {
 	margin-left: 250px;
 }
 
-.page header {
+.page .root > header {
     margin: 0 30px;
     min-height: 114px;
     display: flex;
@@ -43,7 +43,7 @@ export default {
     }
 }
 
-.page main {
+.page .root > main {
     margin-top: 30px;
 }
 </style>

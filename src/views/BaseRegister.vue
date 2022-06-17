@@ -1,8 +1,8 @@
 <template>
     <div class="register">
-        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+        <Form name='form' @submit="submitHandler()" :rules="submitHandler" :validation-schema="validationRules">
             <fieldset class="register__fieldset">
-                <legend class="register__header"><p>Регистрация</p></legend>
+                <legend class="register__header"><h2>Регистрация</h2></legend>
                 <div class="register__content">
                     <Field class="register__input"
                         type="email"
@@ -25,49 +25,64 @@
                         placeholder="Введите вашу фамилию"
                         v-model.trim="userData.lastName" />
 
-                    <select class="register__select" v-model="userData.role">
-                        <option value="Менеджер информационных систем">Менеджер информационных систем</option>
-                        <option value="IT специалист">IT специалист</option>
-                        <option value="Администратор">Администратор</option>
-                        <option value="Директор по маркетингу">Директор по маркетингу</option>
-                        <option value="Менеджер по работе с клиентами">Менеджер по работе с клиентами</option>
-                        <option value="Директор по развитию отношений с клиентами">Директор по развитию отношений с клиентами</option>
-                        <option value="Бухгалтер">Бухгалтер</option>
-                        <option value="Главный исполнительный директор">Главный исполнительный директор</option>
-                    </select>
+                    <Field class="register__select"
+                        as="select"
+                        name="role"
+                        id="role"
+                        v-model="userData.role">
+                            <option value="Менеджер информационных систем">Менеджер информационных систем</option>
+                            <option value="IT специалист">IT специалист</option>
+                            <option value="Администратор">Администратор</option>
+                            <option value="Директор по маркетингу">Директор по маркетингу</option>
+                            <option value="Менеджер по работе с клиентами">Менеджер по работе с клиентами</option>
+                            <option value="Директор по развитию отношений с клиентами">Директор по развитию отношений с клиентами</option>
+                            <option value="Бухгалтер">Бухгалтер</option>
+                            <option value="Главный исполнительный директор">Главный исполнительный директор</option>
+                    </Field>
 
-                    <select class="register__select" v-model="userData.status">
-                        <option value="Начальный уровень">Начальный уровень</option>
-                        <option value="Средний уровень">Средний уровень</option>
-                        <option value="Высокий уровень">Высокий уровень</option>
-                        <option value="Продвинутый уровень">Продвинутый уровень</option>
-                        <option value="Экспертный уровень">Экспертный уровень</option>
-                    </select>
+                    <Field class="register__select"
+                        as="select"
+                        name="status"
+                        id="status"
+                        v-model="userData.status">
+                            <option value="Начальный уровень">Начальный уровень</option>
+                            <option value="Средний уровень">Средний уровень</option>
+                            <option value="Высокий уровень">Высокий уровень</option>
+                            <option value="Продвинутый уровень">Продвинутый уровень</option>
+                            <option value="Экспертный уровень">Экспертный уровень</option>
+                    </Field>
 
                     <Field class="register__input"
                         type="password"
                         name="password"
                         id="password"
                         placeholder="Введите ваш пароль"
-                        v-model="password" />
+                        v-model="password"
+                        autocomplete="on" />
 
                     <Field class="register__input"
                         type="password"
                         name="confirmPassword"
                         id="confirmPassword"
                         placeholder="Подтвердите ваш пароль"
-                        v-model="confirmPassword" />
+                        v-model="confirmPassword"
+                        autocomplete="off" />
 
                     <div class="errors">
                         <ErrorMessage class="error" name="email" />
                         <ErrorMessage class="error" name="firstName" />
                         <ErrorMessage class="error" name="lastName" />
+                        <ErrorMessage class="error" name="role" />
+                        <ErrorMessage class="error" name="status" />
                         <ErrorMessage class="error" name="password" />
                         <ErrorMessage class="error" name="confirmPassword" />
                         <div class="error" v-if="submitError != ''">{{submitError}}</div>
                     </div>
                 </div>
                 <BaseButton type="submit" class="register__button">Зарегистрироваться</BaseButton>
+                <router-link class="register__login" :to="{name: 'login'}">
+                    Войти
+                </router-link>
             </fieldset>
         </Form>
     </div>
@@ -102,6 +117,12 @@ export default defineComponent({
             lastName: yup.string()
                 .required('Поле фамилия обязательное!')
                 .matches(/^([А-Я]{1}[а-яё]{1,23})$/gm, 'Некорректная фамилия.'),
+
+            role: yup.string()
+                .required('Поле профессия обязательное!'),
+
+            status: yup.string()
+                .required('Поле статус обязательное!'),
 
             password: yup.string()
                 .required('Поле пароль обязательное!')
@@ -161,6 +182,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .register {
+    position: relative;
     margin: 30px auto;
     padding: 25px 0;
     width: 50%;
@@ -176,7 +198,7 @@ export default defineComponent({
     text-align: center;
 }
 
-.register__header p {
+.register__header h2 {
     margin: 30px 0;
     font-size: 48px;
 }
@@ -214,6 +236,18 @@ export default defineComponent({
 
 .register__button {
     margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+.register__login {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;
+    transform: translateX(-50%);
+    color: #5B6AD0;
+    &:active {
+        color: #2B3AA0;
+    }
 }
 
 .errors {
@@ -227,5 +261,4 @@ export default defineComponent({
 .error {
     color: #FF2400;
 }
-
 </style>

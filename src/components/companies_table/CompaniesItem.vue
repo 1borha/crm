@@ -9,6 +9,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+
 interface PropsInterface {
     name: string,
     email: string,
@@ -17,6 +18,7 @@ interface PropsInterface {
     owner: string,
     createdAt: string
 }
+
 export default defineComponent({
     name: 'CompaniesItem',
     props: {

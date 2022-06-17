@@ -10,7 +10,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 button {
     padding: 13px 20px;
     border: none;
@@ -19,5 +19,4 @@ button {
     color: #FFF;
     font-size: 16px;
 }
-
 </style>

@@ -29,16 +29,17 @@
 <script lang="ts">
 import DealsColumn from './DealsColumn.vue'
 import { defineComponent } from 'vue'
+
 export default defineComponent({
     name: 'DealsTable',
+    components: {
+        DealsColumn
+    },
     props: {
         text: {
             type: String,
             required: true
         }
-    },
-    components: {
-        DealsColumn
     }
 })
 </script>
@@ -71,5 +72,4 @@ export default defineComponent({
     border-top: none;
     background-color: #f0f0f0;
 }
-
 </style>

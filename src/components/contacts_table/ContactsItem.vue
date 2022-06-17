@@ -8,6 +8,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
+
 interface PropsInterface {
     info: {
         firstName: string,
@@ -22,6 +23,7 @@ interface PropsInterface {
         state: string
     }
 }
+
 export default defineComponent({
     name: 'ContactsItem',
     props: {

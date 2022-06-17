@@ -1,17 +1,20 @@
 <template>
-    <header>
-        <h1>Архив сделок</h1>
-        <BaseSearch :text="text" v-model="text" />
-    </header>
-    <main>
-        <DealsArchiveTable :text="text" />
-    </main>
+    <div class="root">
+        <header>
+            <h1>Архив сделок</h1>
+            <BaseSearch :text="text" v-model="text" />
+        </header>
+        <main>
+            <DealsArchiveTable :text="text" />
+        </main>
+    </div>
 </template>
 
 <script lang="ts">
 import DealsArchiveTable from '@/components/deals_archive_table/DealsArchiveTable.vue'
 import BaseSearch from '@/components/BaseSearch.vue'
 import { defineComponent } from 'vue'
+
 export default defineComponent({
     name: 'ArchiveDeals',
     components: {
@@ -28,7 +31,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style>
-
-</style>

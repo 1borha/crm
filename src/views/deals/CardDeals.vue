@@ -1,9 +1,10 @@
 <template>
     <div class="deal">
         <CloseButton class="deal__close" />
-        <Form name='form' @submit="submitHandler" :rules="submitHandler" :validation-schema="validationRules">
+        <Form name='form' @submit="submitHandler()" :rules="submitHandler" :validation-schema="validationRules">
             <fieldset class="deal__fieldset">
-                <legend class="deal__header"><p>Изменить сделку</p></legend>
+                <legend class="deal__header"><h2>Изменить сделку</h2></legend>
+
                 <div class="deal__content">
                     <Field name="name" v-slot="{field}" v-model="name">
                         <input class="deal__input" v-bind="field" type="text">
@@ -83,6 +84,18 @@ export default defineComponent({
             validationRules
         }
     },
+    async mounted () {
+        await this.$store.dispatch('GET_DEALS', 'deals init')
+        const id = (this.$route.params.id).toString()
+        this.id = id
+        const dealData = this.$store.getters.getDeal(id)[0]
+
+        this.dealData = dealData
+        this.name = dealData.name
+        this.amount = dealData.amount.toString()
+        this.status = dealData.status
+        this.result = dealData.result
+    },
     methods: {
         deleteBtn () {
             this.$store.dispatch('ARCHIVE_DEAL', this.id)
@@ -114,18 +127,6 @@ export default defineComponent({
                 }
             }
         }
-    },
-    async mounted () {
-        await this.$store.dispatch('GET_DEALS', 'deals init')
-        const id = (this.$route.params.id).toString()
-        this.id = id
-        const dealData = this.$store.getters.getDeal(id)[0]
-
-        this.dealData = dealData
-        this.name = dealData.name
-        this.amount = dealData.amount.toString()
-        this.status = dealData.status
-        this.result = dealData.result
     }
 })
 </script>
@@ -148,7 +149,7 @@ export default defineComponent({
     text-align: center;
 }
 
-.deal__header p {
+.deal__header h2 {
     margin: 30px 0;
     font-size: 48px;
 }

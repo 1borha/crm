@@ -1,9 +1,9 @@
 <template>
-	<div id="app">
+	<div>
 		<component :is="layout">
 			<router-view/>
 		</component>
-  </div>
+	</div>
 </template>
 
 <script lang="ts">

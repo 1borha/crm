@@ -6,6 +6,7 @@
 
 <script lang="ts">
 import { Icon } from '@iconify/vue'
+
 export default {
     name: 'CloseButton',
     components: {

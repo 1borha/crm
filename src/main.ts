@@ -51,7 +51,7 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 
     if (!app) {
-        createApp(App)
+        app = createApp(App)
         .component('page-layout', PageLayout)
         .component('module-layout', ModuleLayout)
         .use(store)

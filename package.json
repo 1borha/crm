@@ -12,8 +12,6 @@
   "dependencies": {
     "@types/vue": "^2.0.0",
     "@types/vuelidate": "^0.7.15",
-    "@vuelidate/core": "^2.0.0-alpha.40",
-    "@vuelidate/validators": "^2.0.0-alpha.28",
     "core-js": "^3.8.3",
     "firebase": "^9.6.11",
     "flush-promises": "^1.0.2",

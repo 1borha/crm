@@ -1,33 +1,30 @@
 <template>
     <div class="root">
         <header>
-            <h1>Контакты</h1>
+            <h1>Мои задачи</h1>
             <BaseSearch :text="text" v-model="text" />
         </header>
         <main>
-            <ContactsTable :text="text" />
+            <MyTasksTable :text="text" />
         </main>
     </div>
 </template>
 
 <script lang="ts">
-import ContactsTable from '@/components/contacts_table/ContactsTable.vue'
-import BaseSearch from '@/components/BaseSearch.vue'
 import { defineComponent } from 'vue'
+import BaseSearch from '@/components/BaseSearch.vue'
+import MyTasksTable from '@/components/my_tasks_table/MyTasksTable.vue'
 
 export default defineComponent({
-    name: 'BaseContacts',
+    name: 'MyTasks',
     components: {
-        ContactsTable,
-        BaseSearch
+        BaseSearch,
+        MyTasksTable
     },
     data () {
         return {
             text: ''
         }
-    },
-    mounted () {
-        this.$store.dispatch('GET_CONTACTS', 'contacts init')
     }
 })
 </script>

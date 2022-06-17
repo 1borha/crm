@@ -3,31 +3,29 @@
         <thead>
             <tr class="table__header">
                 <td @click="setSortOption('name')" style="cursor: pointer">Название</td>
-                <td @click="setSortOption('amount')" style="cursor: pointer">Цена</td>
-                <td @click="setSortOption('status')" style="cursor: pointer">Статус</td>
-                <td @click="setSortOption('result')" style="cursor: pointer">Результат</td>
-                <td @click="setSortOption('date')" style="cursor: pointer">Дата создания</td>
-                <td @click="setSortOption('archiveDate')" style="cursor: pointer">Дата архивирования</td>
-                <td @click="setSortOption('creator')" style="cursor: pointer">Создатель</td>
-                <td></td>
+                <td @click="setSortOption('createdBy')" style="cursor: pointer">Создатель</td>
+                <td @click="setSortOption('deadline')" style="cursor: pointer">Дедлайн</td>
+                <td @click="setSortOption('resposiblePerson')" style="cursor: pointer">Выполняет</td>
+                <td @click="setSortOption('crm')" style="cursor: pointer">CRM</td>
+                <td>Теги</td>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(archiveDeal, index) in $store.getters.getSortedAndSearchedArchiveDeals(sortOptions, text)" :key="index">
-                <DealsArchiveItem :archiveDeal="archiveDeal" />
+            <tr v-for="(task, index) in $store.getters.getSortedAndSearchedTasks(sortOptions, text)" :key="index">
+                <TasksItem :task="task" />
             </tr>
         </tbody>
     </table>
 </template>
 
 <script lang="ts">
-import DealsArchiveItem from '@/components/deals_archive_table/DealsArchiveItem.vue'
+import TasksItem from '@/components/tasks_table/TasksItem.vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'DealsArchiveTable',
+    name: 'TasksTable',
     components: {
-        DealsArchiveItem
+        TasksItem
     },
     props: {
         text: {

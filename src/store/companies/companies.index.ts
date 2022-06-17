@@ -4,13 +4,36 @@ import { initState } from '@/store/initState'
 
 type State = typeof initState
 
+interface TasksPayload {
+    id: string,
+    name: string,
+    createdBy: string,
+    deadline: string,
+    responsiblePerson: string,
+    completed: string,
+    crmType: string,
+    crm: string,
+    crmName: string,
+    tags: Array<string>
+}
+
+interface ProjectsPayload {
+    id: string,
+    name: string,
+    company: string,
+    createDate: string,
+    description: string,
+    tasks: Array<TasksPayload>
+}
+
 interface CompaniesPayload {
     name: string,
     email: string,
     phone: string,
     lifeStage: string,
     owner: string,
-    createdAt: string
+    createdAt: string,
+    projects: Array<ProjectsPayload>
 }
 
 /*
@@ -45,7 +68,9 @@ export const mutations: MutationTree<State> & Mutations = {
     },
 
     addCompany ({ companies }, payload) {
-        companies.companies.push(payload)
+        if (payload) {
+            companies.companies.push(payload)
+        }
     }
 }
 
@@ -68,8 +93,8 @@ export const getters: GetterTree<State, State> & Getters = {
     getSortCompanies: ({ companies }) => (payload : {sortBy : string, reverse : boolean}) => {
         if (payload.sortBy !== 'createdAt') {
             return [...companies.companies]
-                .sort((item1, item2) => item1[payload.sortBy as keyof CompaniesPayload]
-                ?.localeCompare(item2[payload.sortBy as keyof CompaniesPayload]) * (payload.reverse ? -1 : 1)) ??
+                .sort((item1, item2) => item1[payload.sortBy as keyof Omit<CompaniesPayload, 'projects'>]
+                ?.localeCompare(item2[payload.sortBy as keyof Omit<CompaniesPayload, 'projects'>]) * (payload.reverse ? -1 : 1)) ??
                 companies.companies
         } else {
             return [...companies.companies]

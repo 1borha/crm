@@ -3,31 +3,31 @@
         <thead>
             <tr class="table__header">
                 <td @click="setSortOption('name')" style="cursor: pointer">Название</td>
-                <td @click="setSortOption('amount')" style="cursor: pointer">Цена</td>
-                <td @click="setSortOption('status')" style="cursor: pointer">Статус</td>
-                <td @click="setSortOption('result')" style="cursor: pointer">Результат</td>
-                <td @click="setSortOption('date')" style="cursor: pointer">Дата создания</td>
-                <td @click="setSortOption('archiveDate')" style="cursor: pointer">Дата архивирования</td>
-                <td @click="setSortOption('creator')" style="cursor: pointer">Создатель</td>
+                <td @click="setSortOption('createdBy')" style="cursor: pointer">Создатель</td>
+                <td @click="setSortOption('deadline')" style="cursor: pointer">До дедлайна осталось:</td>
+                <td @click="setSortOption('crm')" style="cursor: pointer">CRM</td>
+                <td>Теги</td>
                 <td></td>
             </tr>
         </thead>
         <tbody>
-            <tr v-for="(archiveDeal, index) in $store.getters.getSortedAndSearchedArchiveDeals(sortOptions, text)" :key="index">
-                <DealsArchiveItem :archiveDeal="archiveDeal" />
+            <tr v-for="(task, index) in $store.getters.getSortedAndSearchedTasks(sortOptions, text)" :key="index">
+                <MyTasksItem
+                    v-if="task.responsiblePerson === ($store.state.auth.user.firstName + ' ' + $store.state.auth.user.lastName)"
+                    :task="task" />
             </tr>
         </tbody>
     </table>
 </template>
 
 <script lang="ts">
-import DealsArchiveItem from '@/components/deals_archive_table/DealsArchiveItem.vue'
+import MyTasksItem from '@/components/my_tasks_table/MyTasksItem.vue'
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-    name: 'DealsArchiveTable',
+    name: 'MyTasksTable',
     components: {
-        DealsArchiveItem
+        MyTasksItem
     },
     props: {
         text: {
